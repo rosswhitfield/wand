@@ -28,10 +28,10 @@ ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample
 
 # Do multiple
 
-if 'md' in mtd:
+if 'mdh' in mtd:
     mtd.remove('md')
     
-if 'van_md' in mtd:
+if 'van_mdh' in mtd:
     mtd.remove('van_md')
 
 for run in range(1059,1834,1):
@@ -45,28 +45,30 @@ for run in range(1059,1834,1):
         ws.setX(idx, w)
     ws=ConvertToEventWorkspace(ws)
     SetGoniometer('ws', Axis0="HB2C:Mot:s1,0,1,0,1")
-    ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md',OverwriteExisting=False,MinValues='-10,-10,-10',MaxValues='10,10,10')
+    ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md',MinValues='-10,-10,-10',MaxValues='10,10,10')
     # Van, copy goniometer
     mtd['van'].run().getGoniometer().setR(mtd['ws'].run().getGoniometer().getR())
-    ConvertToMD('van', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='van_md',OverwriteExisting=False,MinValues='-10,-10,-10',MaxValues='10,10,10')
+    ConvertToMD('van', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='van_md',MinValues='-10,-10,-10',MaxValues='10,10,10')
+    mdh_tmp = BinMD(InputWorkspace='md', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
+    van_mdh_tmp = BinMD(InputWorkspace='van_md', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
+    if 'mdh' in mtd:
+        mdh = mdh + mdh_tmp
+    else:
+        mdh=CloneWorkspace(mdh_tmp)
+    if 'van_mdh' in mtd:
+        van_mdh = van_mdh + van_mdh_tmp
+    else:
+        van_mdh=CloneWorkspace(van_mdh_tmp)
     if run%20 == 0:
-        SaveMD('md', '/SNS/users/rwp/wand/Ho2PdSi3_data_MDE.nxs')
-        SaveMD('van_md', '/SNS/users/rwp/wand/Ho2PdSi3_van_MDE.nxs')
-        mdh = BinMD(InputWorkspace='md', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
-        van_mdh = BinMD(InputWorkspace='van_md', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
         norm = mdh/van_mdh
-        SaveMD('mdh', '/SNS/users/rwp/wand/Ho2PdSi3_data_MDH.nxs')
-        SaveMD('van_mdh', '/SNS/users/rwp/wand/Ho2PdSi3_van_MDH.nxs')
-        SaveMD('norm', '/SNS/users/rwp/wand/Ho2PdSi3_norm_MDH.nxs')
+        SaveMD('mdh', '/SNS/users/rwp/wand/Ho2PdSi3_data_MDH2.nxs')
+        SaveMD('van_mdh', '/SNS/users/rwp/wand/Ho2PdSi3_van_MDH2.nxs')
+        SaveMD('norm', '/SNS/users/rwp/wand/Ho2PdSi3_norm_MDH2.nxs')
 
-SaveMD('md', '/SNS/users/rwp/wand/Ho2PdSi3_data_MDE.nxs')
-SaveMD('van_md', '/SNS/users/rwp/wand/Ho2PdSi3_van_MDE.nxs')
-mdh = BinMD(InputWorkspace='md', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
-van_mdh = BinMD(InputWorkspace='van_md', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
 norm = mdh/van_mdh
-SaveMD('mdh', '/SNS/users/rwp/wand/Ho2PdSi3_data_MDH.nxs')
-SaveMD('van_mdh', '/SNS/users/rwp/wand/Ho2PdSi3_van_MDH.nxs')
-SaveMD('norm', '/SNS/users/rwp/wand/Ho2PdSi3_norm_MDH.nxs')
+SaveMD('mdh', '/SNS/users/rwp/wand/Ho2PdSi3_data_MDH2.nxs')
+SaveMD('van_mdh', '/SNS/users/rwp/wand/Ho2PdSi3_van_MDH2.nxs')
+SaveMD('norm', '/SNS/users/rwp/wand/Ho2PdSi3_norm_MDH2.nxs')
 
 
 # md=LoadMD('/SNS/users/rwp/wand/Ho2PdSi3_data_MDE.nxs', LoadHistory=False)
