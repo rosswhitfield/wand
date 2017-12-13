@@ -10,10 +10,8 @@ ws = Integration(ws)
 MaskDetectors(ws,DetectorList=range(16384))
 
 
-newAxis = NumericAxis.create(ws.getNumberHistograms())
-newAxis.setUnit("Label").setLabel("Wavelength", "Angstrom")
-
-for idx in range(ws.getNumberHistograms()):
-    newAxis.setValue(idx, 1.488)
-
-ws.replaceAxis(1, newAxis)
+ws.getAxis(0).setUnit("Wavelength")
+w = np.array([1.487,1.489])
+for idx in xrange(ws.getNumberHistograms()):
+    ws.setX(idx, w)
+ws=ConvertToEventWorkspace(ws)

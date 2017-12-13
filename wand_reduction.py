@@ -93,3 +93,14 @@ norm22 = si2/van2
 si3 = CloneWorkspace(si)
 si3 = ConvertAxisByFormula(si3,Formula='1.488',AxisUnits='Wavelength')
 si3d = ConvertUnits(si3, Target='dSpacing')
+
+si4 = CloneWorkspace(si)
+si4.getAxis(0).setUnit("Wavelength")
+w = np.array([1.487,1.489])
+for idx in xrange(si4.getNumberHistograms()):
+    si4.setX(idx, w)
+si4e=ConvertToEventWorkspace(si4)
+si4ed = ConvertUnits(si4e, Target='dSpacing')
+si4edr = Rebin(si4ed, Params='0.8,0.01,4.0')
+si4edr = Rebin(si4ed, Params='1.0,3.0,4.0')
+si4edrs = SumSpectra(si4edr)
