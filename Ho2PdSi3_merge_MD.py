@@ -29,6 +29,7 @@ for run in range(start,end+1,1):
     else:
         van_mdh=CloneWorkspace(van)
 
+start = 1059
 norm = mdh/van_mdh
 SaveMD('mdh', '/SNS/users/rwp/wand/Ho2PdSi3_data_MDH_{}_{}.nxs'.format(start, end))
 SaveMD('van_mdh', '/SNS/users/rwp/wand/Ho2PdSi3_van_MDH_{}_{}.nxs'.format(start, end))
