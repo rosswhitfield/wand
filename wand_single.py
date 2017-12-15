@@ -8,7 +8,6 @@ van.getAxis(0).setUnit("Wavelength")
 w = np.array([1.487,1.489])
 for idx in xrange(van.getNumberHistograms()):
     van.setX(idx, w)
-van=ConvertToEventWorkspace(van)
 SetGoniometer('van', Axis0="HB2C:Mot:s1,0,1,0,1")
 
 """
@@ -20,9 +19,11 @@ ws.getAxis(0).setUnit("Wavelength")
 w = np.array([1.487,1.489])
 for idx in xrange(ws.getNumberHistograms()):
     ws.setX(idx, w)
-ws=ConvertToEventWorkspace(ws)
 SetGoniometer(ws, Axis0="HB2C:Mot:s1,0,1,0,1")
-ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md')
+ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md',IgnoreZeroSignals=False)
+ws2=ConvertToEventWorkspace(ws,GenerateZeros=True)
+SetGoniometer(ws2, Axis0="HB2C:Mot:s1,0,1,0,1")
+ConvertToMD(ws2, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md2',IgnoreZeroSignals=False)
 """
 
 # Do multiple
@@ -42,7 +43,6 @@ for run in range(1059,1834,1):
     ws.getAxis(0).setUnit("Wavelength")
     for idx in xrange(ws.getNumberHistograms()):
         ws.setX(idx, w)
-    ws=ConvertToEventWorkspace(ws)
     SetGoniometer('ws', Axis0="HB2C:Mot:s1,0,1,0,1")
     ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md',OverwriteExisting=False,MinValues='-10,-10,-10',MaxValues='10,10,10')
     # Van, copy goniometer
