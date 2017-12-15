@@ -22,7 +22,6 @@ for idx in xrange(ws.getNumberHistograms()):
     ws.setX(idx, w)
 ws=ConvertToEventWorkspace(ws)
 SetGoniometer(ws, Axis0="HB2C:Mot:s1,0,1,0,1")
-SetGoniometer(ws, Axis0="HB2C:Mot:s1,0,1,0,1")
 ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md')
 """
 
