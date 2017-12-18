@@ -38,5 +38,8 @@ for idx in xrange(van2.getNumberHistograms()):
 
 # ConvertToMD
 
-ConvertToMD(InputWorkspace='si2', QDimensions='|Q|', dEAnalysisMode='Elastic', OutputWorkspace='si_md')
-ConvertToMD(InputWorkspace='van2', QDimensions='|Q|', dEAnalysisMode='Elastic', OutputWorkspace='van_md')
+ConvertToMD(InputWorkspace='si2', QDimensions='|Q|', dEAnalysisMode='Elastic', OutputWorkspace='si_md')#,MinValues='0',MaxValues='10.0')
+ConvertToMD(InputWorkspace='van2', QDimensions='|Q|', dEAnalysisMode='Elastic', OutputWorkspace='van_md')#,MinValues='0',MaxValues='10.0')
+si_bin=BinMD('si_md', AlignedDim0='|Q|,1,10,1800')
+van_bin=BinMD('van_md', AlignedDim0='|Q|,1,10,1800')
+norm=si_bin/van_bin
