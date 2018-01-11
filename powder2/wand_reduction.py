@@ -44,16 +44,16 @@ twotheta=si_2theta/van_2theta
 q=si_q/van_q
 
 # ResampleX
-van_2theta2=ResampleX(van_2theta,XMin=20,XMax=135,NumberBins=2300)
-si_2theta2=ResampleX(si_2theta,XMin=20,XMax=135,NumberBins=2300)
+van_2theta2=ResampleX(van_2theta,XMin=0,XMax=135,NumberBins=2700)
+si_2theta2=ResampleX(si_2theta,XMin=0,XMax=135,NumberBins=2700)
 twotheta2=si_2theta2/van_2theta2
 
-van_d2=ResampleX(van_d,XMin=0.8,XMax=4,NumberBins=3200)
-si_d2=ResampleX(si_d,XMin=0.8,XMax=4,NumberBins=3200)
+van_d2=ResampleX(van_d,XMin=0.8,XMax=10,NumberBins=9200)
+si_d2=ResampleX(si_d,XMin=0.8,XMax=10,NumberBins=9200)
 d2=si_d2/van_d2
 
-van_q2=ResampleX(van_q,XMin=1,XMax=10,NumberBins=1800)
-si_q2=ResampleX(si_q,XMin=1,XMax=10,NumberBins=1800)
+van_q2=ResampleX(van_q,XMin=0,XMax=10,NumberBins=2000)
+si_q2=ResampleX(si_q,XMin=0,XMax=10,NumberBins=2000)
 q2=si_q2/van_q2
 
 
