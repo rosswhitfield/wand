@@ -3,11 +3,20 @@ from mantid.simpleapi import *
 van = LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_2933.nxs.h5')
 van = Integration(van)
 MaskDetectors(van,DetectorList=range(16384))
+
+AddSampleLog(van, LogName='HB2C:Mot:s2', LogText='17.57', LogType='Number Series')
+AddSampleLog(van, LogName='HB2C:Mot:detz', LogText='7.05159', LogType='Number Series')
+LoadInstrument(van, InstrumentName='WAND', RewriteSpectraMap=False)
 SaveNexus('van', 'HB2C_2933.nxs')
+
 
 si = LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_2929.nxs.h5')
 si = Integration(si)
 MaskDetectors(si,DetectorList=range(16384))
+
+AddSampleLog(si, LogName='HB2C:Mot:s2', LogText='17.57', LogType='Number Series')
+AddSampleLog(si, LogName='HB2C:Mot:detz', LogText='7.05159', LogType='Number Series')
+LoadInstrument(si, InstrumentName='WAND', RewriteSpectraMap=False)
 SaveNexus('si', 'HB2C_2929.nxs')
 
 norm = si/van
