@@ -57,3 +57,13 @@ si_q2=ResampleX(si_q,XMin=1,XMax=10,NumberBins=1800)
 q2=si_q2/van_q2
 
 
+
+cu = LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_2930.nxs.h5')
+cu = Integration(cu)
+MaskDetectors(cu,DetectorList=range(16384))
+SaveNexus('cu', 'HB2C_2930.nxs')
+
+NCFA = LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_2931.nxs.h5')
+NCFA = Integration(NCFA)
+MaskDetectors(NCFA,DetectorList=range(16384))
+SaveNexus('NCFA', 'HB2C_2931.nxs')
