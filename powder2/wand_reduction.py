@@ -62,8 +62,24 @@ cu = LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_2930.nxs.h5')
 cu = Integration(cu)
 MaskDetectors(cu,DetectorList=range(16384))
 SaveNexus('cu', 'HB2C_2930.nxs')
+cu_norm = cu/van
+cu_norm=ReplaceSpecialValues(cu_norm, NaNValue=0, InfinityValue=0)
+
+cu_2theta=ConvertSpectrumAxis(cu, Target='Theta')
+cu_2theta=Transpose(cu_2theta)
+cu_2theta2=ResampleX(cu_2theta,XMin=20,XMax=135,NumberBins=2300)
+cu_twotheta2=cu_2theta2/van_2theta2
+
 
 NCFA = LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_2931.nxs.h5')
 NCFA = Integration(NCFA)
 MaskDetectors(NCFA,DetectorList=range(16384))
 SaveNexus('NCFA', 'HB2C_2931.nxs')
+NCFA_norm = NCFA/van
+NCFA_norm=ReplaceSpecialValues(NCFA_norm, NaNValue=0, InfinityValue=0)
+
+NCFA_2theta=ConvertSpectrumAxis(NCFA, Target='Theta')
+NCFA_2theta=Transpose(NCFA_2theta)
+NCFA_2theta2=ResampleX(NCFA_2theta,XMin=18,XMax=135,NumberBins=2540)
+van_2theta2=ResampleX(van_2theta,XMin=18,XMax=135,NumberBins=2540)
+NCFA_twotheta2=NCFA_2theta2/van_2theta2
