@@ -1,7 +1,7 @@
 import numpy as np
 from mantid.simpleapi import *
 
-van = LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_1035.nxs.h5')
+van = LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_2933.nxs.h5')
 van = Integration(van)
 MaskDetectors(van,DetectorList=range(16384))
 van.getAxis(0).setUnit("Wavelength")
@@ -9,6 +9,7 @@ w = np.array([1.487,1.489])
 for idx in xrange(van.getNumberHistograms()):
     van.setX(idx, w)
 SetGoniometer('van', Axis0="HB2C:Mot:s1,0,1,0,1")
+SaveNexus('van','/SNS/users/rwp/wand/HB2C_2933_Van_processed.nxs')
 
 #NaCl 2952 - 4753
 
@@ -21,7 +22,8 @@ w = np.array([1.487,1.489])
 for idx in xrange(ws.getNumberHistograms()):
     ws.setX(idx, w)
 SetGoniometer(ws, Axis0="HB2C:Mot:s1,0,1,0,1")
-ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md',IgnoreZeroSignals=False)
+
+ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md')
 
 # Do multiple
 
