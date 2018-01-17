@@ -52,13 +52,17 @@ for run in range(2952,3052,1): #range(2952,4755,1):
     mtd['van'].run().getGoniometer().setR(mtd['ws'].run().getGoniometer().getR())
     ConvertToMD('van', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='van_md',MinValues='-10,-10,-10',MaxValues='10,10,10')
     if 'data' in mtd:
-        
+        mtd['data'] = mtd['data'] + mtd['md']
+        mtd['norm'] = mtd['norm'] + mtd['van_md']
+    else:
+        data=CloneMDWorkspace('md')
+        norm=CloneMDWorkspace('van_md')
 
 SaveMD('md', '/SNS/users/rwp/wand/NaCl_data_MDE.nxs')
 SaveMD('van_md', '/SNS/users/rwp/wand/NaCl_van_MDE.nxs')
 mdh = BinMD(InputWorkspace='md', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
 van_mdh = BinMD(InputWorkspace='van_md', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
-norm = mdh/van_mdh
+norm_mdh = mdh/van_mdh
 SaveMD('mdh', '/SNS/users/rwp/wand/NaCl_data_MDH.nxs')
 SaveMD('van_mdh', '/SNS/users/rwp/wand/NaCl_van_MDH.nxs')
 SaveMD('norm', '/SNS/users/rwp/wand/NaCl_norm_MDH.nxs')
