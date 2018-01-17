@@ -4,7 +4,7 @@ from mantid.simpleapi import *
 van = LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_2933.nxs.h5')
 van = Integration(van)
 MaskDetectors(van,DetectorList=range(16384))
-GroupDetectors(InputWorkspace='van', OutputWorkspace='van', MapFile='/SNS/users/rwp/wand/single2/HB2C_4x4.map')
+van=GroupDetectors(van, MapFile='/SNS/users/rwp/wand/single2/HB2C_4x4.map')
 van.getAxis(0).setUnit("Wavelength")
 w = np.array([1.487,1.489])
 for idx in xrange(van.getNumberHistograms()):
@@ -34,10 +34,11 @@ if 'md' in mtd:
 if 'van_md' in mtd:
     mtd.remove('van_md')
 
-for run in range(2952,4755,100):
+for run in range(2952,4755,1):
     ws = LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_{}.nxs.h5'.format(run))
     ws = Integration(ws)
     MaskDetectors(ws,DetectorList=range(16384))
+    ws=GroupDetectors(ws,CopyGroupingFromWorkspace='van')
     ws.getAxis(0).setUnit("Wavelength")
     for idx in xrange(ws.getNumberHistograms()):
         ws.setX(idx, w)
