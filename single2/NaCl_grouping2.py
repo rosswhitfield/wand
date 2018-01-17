@@ -32,11 +32,11 @@ ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample
 
 # Do multiple
 
-if 'md' in mtd:
-    mtd.remove('md')
+if 'data' in mtd:
+    mtd.remove('data')
     
-if 'van_md' in mtd:
-    mtd.remove('van_md')
+if 'norm' in mtd:
+    mtd.remove('norm')
 
 for run in range(2952,3052,1): #range(2952,4755,1):
     ws = LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_{}.nxs.h5'.format(run))
@@ -47,10 +47,12 @@ for run in range(2952,3052,1): #range(2952,4755,1):
     for idx in xrange(ws.getNumberHistograms()):
         ws.setX(idx, w)
     SetGoniometer('ws', Axis0="HB2C:Mot:s1,0,1,0,1")
-    ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md',OverwriteExisting=False,MinValues='-10,-10,-10',MaxValues='10,10,10')
+    ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md',MinValues='-10,-10,-10',MaxValues='10,10,10')
     # Van, copy goniometer
     mtd['van'].run().getGoniometer().setR(mtd['ws'].run().getGoniometer().getR())
-    ConvertToMD('van', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='van_md',OverwriteExisting=False,MinValues='-10,-10,-10',MaxValues='10,10,10')
+    ConvertToMD('van', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='van_md',MinValues='-10,-10,-10',MaxValues='10,10,10')
+    if 'data' in mtd:
+        
 
 SaveMD('md', '/SNS/users/rwp/wand/NaCl_data_MDE.nxs')
 SaveMD('van_md', '/SNS/users/rwp/wand/NaCl_van_MDE.nxs')
