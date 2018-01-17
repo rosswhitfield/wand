@@ -58,21 +58,25 @@ for run in range(2952,4754,1):
         data=CloneMDWorkspace('md')
         norm=CloneMDWorkspace('van_md')
     if run%100 == 0:
-        SaveMD('md', '/SNS/users/rwp/wand/NaCl_data_MDE.nxs')
-        SaveMD('van_md', '/SNS/users/rwp/wand/NaCl_van_MDE.nxs')
+        SaveMD('data', '/SNS/users/rwp/wand/NaCl_data_MDE.nxs')
+        SaveMD('norm', '/SNS/users/rwp/wand/NaCl_van_MDE.nxs')
 
-SaveMD('md', '/SNS/users/rwp/wand/NaCl_data_MDE.nxs')
-SaveMD('van_md', '/SNS/users/rwp/wand/NaCl_van_MDE.nxs')
+SaveMD('data', '/SNS/users/rwp/wand/NaCl_data_MDE.nxs')
+SaveMD('norm', '/SNS/users/rwp/wand/NaCl_van_MDE.nxs')
 mdh = BinMD(InputWorkspace='data', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
 van_mdh = BinMD(InputWorkspace='norm', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
 norm_mdh = mdh/van_mdh
 SaveMD('mdh', '/SNS/users/rwp/wand/NaCl_data_MDH.nxs')
 SaveMD('van_mdh', '/SNS/users/rwp/wand/NaCl_van_MDH.nxs')
-SaveMD('norm', '/SNS/users/rwp/wand/NaCl_norm_MDH.nxs')
+SaveMD('norm_mdh', '/SNS/users/rwp/wand/NaCl_norm_MDH.nxs')
 
-
-# md=LoadMD('/SNS/users/rwp/wand/NaCl_data_MDE.nxs', LoadHistory=False)
-# van_md=LoadMD('/SNS/users/rwp/wand/NaCl_van_MDE.nxs', LoadHistory=False)
+"""
+md=LoadMD('/SNS/users/rwp/wand/NaCl_data_MDE.nxs', LoadHistory=False)
+van_md=LoadMD('/SNS/users/rwp/wand/NaCl_van_MDE.nxs', LoadHistory=False)
+mdh = BinMD(InputWorkspace='md', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
+van_mdh = BinMD(InputWorkspace='van_md', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
+norm_mdh = mdh/van_mdh
 # mdh=LoadMD('/SNS/users/rwp/wand/NaCl_data_MDH.nxs', LoadHistory=False)
 # van_mdh=LoadMD('/SNS/users/rwp/wand/NaCl_van_MDH.nxs', LoadHistory=False)
 # norm=LoadMD('/SNS/users/rwp/wand/NaCl_norm_MDH.nxs', LoadHistory=False)
+"""
