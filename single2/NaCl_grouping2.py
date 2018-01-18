@@ -73,4 +73,5 @@ mdh = BinMD(InputWorkspace='data', AlignedDim0='Q_sample_x,-10,10,401', AlignedD
 van_mdh = BinMD(InputWorkspace='norm', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
 norm_mdh = mdh/van_mdh
 
-FindPeaksMD(InputWorkspace='mdh', PeakDistanceThreshold=0.5, MaxPeaks=10, DensityThresholdFactor=10000, OutputWorkspace='peaks')
+FindPeaksMD(InputWorkspace='mdh', PeakDistanceThreshold=0.5, MaxPeaks=50, DensityThresholdFactor=10, OutputWorkspace='peaks')
+FindPeaksMD(InputWorkspace='norm_mdh', PeakDistanceThreshold=0.5, MaxPeaks=50, DensityThresholdFactor=10, OutputWorkspace='peaks2')
