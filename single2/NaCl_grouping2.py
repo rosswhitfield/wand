@@ -50,6 +50,7 @@ for run in range(2952,4754,1):
     ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md',MinValues='-10,-10,-10',MaxValues='10,10,10')
     # Van, copy goniometer
     mtd['van'].run().getGoniometer().setR(mtd['ws'].run().getGoniometer().getR())
+    DeleteWorkspace('ws')
     ConvertToMD('van', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='van_md',MinValues='-10,-10,-10',MaxValues='10,10,10')
     if 'data' in mtd:
         mtd['data'] = mtd['data'] + mtd['md']
@@ -57,6 +58,8 @@ for run in range(2952,4754,1):
     else:
         data=CloneMDWorkspace('md')
         norm=CloneMDWorkspace('van_md')
+    DeleteWorkspace('md')
+    DeleteWorkspace('van_md')
     if run%100 == 0:
         SaveMD('data', '/SNS/users/rwp/wand/NaCl_data_MDE.nxs')
         SaveMD('norm', '/SNS/users/rwp/wand/NaCl_van_MDE.nxs')
