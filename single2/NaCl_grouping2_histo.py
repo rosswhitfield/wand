@@ -65,3 +65,14 @@ for run in range(2952,4754,1):
 
 SaveMD('data', '/SNS/users/rwp/wand/NaCl_data_MDH.nxs')
 SaveMD('norm', '/SNS/users/rwp/wand/NaCl_van_MDH.nxs')
+
+
+"""
+data=LoadMD('/SNS/users/rwp/wand/NaCl_data_MDH.nxs', LoadHistory=False)
+norm=LoadMD('/SNS/users/rwp/wand/NaCl_van_MDH.nxs', LoadHistory=False)
+"""
+
+data_norm = data/norm
+
+FindPeaksMD(InputWorkspace='mdh', PeakDistanceThreshold=0.5, MaxPeaks=50, DensityThresholdFactor=10, OutputWorkspace='peaks')
+FindPeaksMD(InputWorkspace='norm_mdh', PeakDistanceThreshold=0.5, MaxPeaks=50, DensityThresholdFactor=10, OutputWorkspace='peaks2')
