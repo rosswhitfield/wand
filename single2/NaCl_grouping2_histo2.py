@@ -40,11 +40,11 @@ if 'norm' in mtd:
 
 for run in range(2952,4754,1):
     LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_{}.nxs.h5'.format(run),OutputWorkspace='ws')
-    Integration('ws','ws')
+    Integration(InputWorkspace='ws',OutputWorkspace='ws')
     MaskDetectors('ws',DetectorList=range(16384))
-    GroupDetectors('ws','ws',CopyGroupingFromWorkspace='van')
+    #GroupDetectors(InputWorkspace='ws',OutputWorkspace='ws',CopyGroupingFromWorkspace='van')
     mtd['ws'].getAxis(0).setUnit("Wavelength")
-    for idx in xrange(ws.getNumberHistograms()):
+    for idx in xrange(mtd['ws'].getNumberHistograms()):
         mtd['ws'].setX(idx, w)
     SetGoniometer('ws', Axis0="HB2C:Mot:s1,0,1,0,1")
     ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md',MinValues='-10,-10,-10',MaxValues='10,10,10')
@@ -54,17 +54,17 @@ for run in range(2952,4754,1):
     BinMD(InputWorkspace='md', OutputWorkspace='mdh', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
     BinMD(InputWorkspace='van_md', OutputWorkspace='van_mdh',  AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
     if 'data' in mtd:
-        PlusMD('data', 'mdh', 'data')
-        PlusMD('norm', 'van_mdh', 'norm')
+        PlusMD(LHSWorkspace='data', RHSWorkspace='mdh', OutputWorkspace='data')
+        PlusMD(LHSWorkspace='norm', RHSWorkspace='van_mdh', OutputWorkspace='norm')
     else:
-        CloneMDWorkspace('mdh', 'data')
-        CloneMDWorkspace('van_mdh', 'norm')
+        CloneMDWorkspace(InputWorkspace='mdh', OutputWorkspace='data')
+        CloneMDWorkspace(InputWorkspace='van_mdh', OutputWorkspace='norm')
     if run%100 == 0:
-        SaveMD('data', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_data_MDH.nxs')
-        SaveMD('norm', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_van_MDH.nxs')
+        SaveMD('data', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_data_MDH2.nxs')
+        SaveMD('norm', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_van_MDH2.nxs')
 
-SaveMD('data', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_data_MDH.nxs')
-SaveMD('norm', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_van_MDH.nxs')
+SaveMD('data', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_data_MDH2.nxs')
+SaveMD('norm', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_van_MDH2.nxs')
 
 
 """
