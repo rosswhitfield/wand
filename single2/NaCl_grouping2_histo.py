@@ -39,7 +39,7 @@ if 'norm' in mtd:
     mtd.remove('norm')
 
 for run in range(2952,4754,1):
-    ClearCache(InstrumentCache=True)
+    ClearCache(AlgorithmCache=True, InstrumentCache=True, UsageServiceCache=True)
     ws = LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_{}.nxs.h5'.format(run))
     ws = Integration(ws)
     MaskDetectors(ws,DetectorList=range(16384))
