@@ -64,8 +64,8 @@ for run in range(2952,3052,1): #range(2952,4754,1):
         SaveMD('data', '/SNS/users/rwp/wand/NaCl_data_MDE.nxs')
         SaveMD('norm', '/SNS/users/rwp/wand/NaCl_van_MDE.nxs')
 
-SaveMD('data', '/SNS/users/rwp/wand/NaCl_data_MDE.nxs')
-SaveMD('norm', '/SNS/users/rwp/wand/NaCl_van_MDE.nxs')
+SaveMD('data', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_data_MDE.nxs')
+SaveMD('norm', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_van_MDE.nxs')
 
 """
 data=LoadMD('/SNS/users/rwp/wand/NaCl_data_MDE.nxs', LoadHistory=False)

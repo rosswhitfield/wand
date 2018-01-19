@@ -60,11 +60,11 @@ for run in range(2952,4754,1):
         data=CloneMDWorkspace('mdh')
         norm=CloneMDWorkspace('van_mdh')
     if run%100 == 0:
-        SaveMD('data', '/SNS/users/rwp/wand/NaCl_data_MDH.nxs')
-        SaveMD('norm', '/SNS/users/rwp/wand/NaCl_van_MDH.nxs')
+        SaveMD('data', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_data_MDH.nxs')
+        SaveMD('norm', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_van_MDH.nxs')
 
-SaveMD('data', '/SNS/users/rwp/wand/NaCl_data_MDH.nxs')
-SaveMD('norm', '/SNS/users/rwp/wand/NaCl_van_MDH.nxs')
+SaveMD('data', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_data_MDH.nxs')
+SaveMD('norm', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_van_MDH.nxs')
 
 
 """
