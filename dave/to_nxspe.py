@@ -12,7 +12,6 @@ for run in range(2952,4754):
     ws = Integration(ws)
     MaskDetectors(ws,DetectorList=range(16384))
     ws.getAxis(0).setUnit("Wavelength")
-    w = np.array([1.487,1.489])
     for idx in xrange(ws.getNumberHistograms()):
         ws.setX(idx, w)
     ws=ws/van/ws.getRun().getProtonCharge()
