@@ -68,8 +68,8 @@ SaveMD('norm', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_van_MDH3.nxs')
 
 
 """
-data=LoadMD('/SNS/users/rwp/wand/NaCl_data_MDH.nxs', LoadHistory=False)
-norm=LoadMD('/SNS/users/rwp/wand/NaCl_van_MDH.nxs', LoadHistory=False)
+data=LoadMD('/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_data_MDH3.nxs', LoadHistory=False)
+norm=LoadMD('/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_van_MDH3.nxs', LoadHistory=False)
 """
 
 data_norm = data/norm
