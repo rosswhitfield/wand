@@ -26,27 +26,24 @@ if 'norm' in mtd:
     mtd.remove('norm')
 
 for run in range(2952,4754,1): #range(2952,4754,1):
-    ws = LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_{}.nxs.h5'.format(run))
-    ws = Integration(ws)
-    MaskDetectors(ws,DetectorList=range(16384))
-    ws=GroupDetectors(ws,CopyGroupingFromWorkspace='van')
-    ws.getAxis(0).setUnit("Wavelength")
-    for idx in xrange(ws.getNumberHistograms()):
-        ws.setX(idx, w)
+    LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_{}.nxs.h5'.format(run),OutputWorkspace='ws')
+    Integration(InputWorkspace='ws',OutputWorkspace='ws')
+    MaskDetectors('ws',DetectorList=range(16384))
+    GroupDetectors(InputWorkspace='ws',OutputWorkspace='ws',CopyGroupingFromWorkspace='van')
+    mtd['ws'].getAxis(0).setUnit("Wavelength")
+    for idx in xrange(mtd['ws'].getNumberHistograms()):
+        mtd['ws'].setX(idx, w)
     SetGoniometer('ws', Axis0="HB2C:Mot:s1,0,1,0,1")
     ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md',MinValues='-10,-10,-10',MaxValues='10,10,10')
     # Van, copy goniometer
     mtd['van'].run().getGoniometer().setR(mtd['ws'].run().getGoniometer().getR())
-    DeleteWorkspace('ws')
     ConvertToMD('van', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='van_md',MinValues='-10,-10,-10',MaxValues='10,10,10')
     if 'data' in mtd:
-        mtd['data'] = mtd['data'] + mtd['md']
-        mtd['norm'] = mtd['norm'] + mtd['van_md']
+        PlusMD(LHSWorkspace='data', RHSWorkspace='md', OutputWorkspace='data')
+        PlusMD(LHSWorkspace='norm', RHSWorkspace='van_md', OutputWorkspace='norm')
     else:
-        data=CloneMDWorkspace('md')
-        norm=CloneMDWorkspace('van_md')
-    DeleteWorkspace('md')
-    DeleteWorkspace('van_md')
+        CloneMDWorkspace(InputWorkspace='md', OutputWorkspace='data')
+        CloneMDWorkspace(InputWorkspace='van_md', OutputWorkspace='norm')
     if run%100 == 0:
         SaveMD('data', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_data_MDE2.nxs')
         SaveMD('norm', '/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_van_MDE2.nxs')

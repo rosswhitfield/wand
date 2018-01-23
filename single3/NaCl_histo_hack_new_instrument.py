@@ -5,10 +5,10 @@ w = np.array([1.487,1.489])
 
 #data=LoadMD('/HFIR/HB2C/IPTS-7776/shared/rwp/NaCl_data_MDH3.nxs', LoadHistory=False)
 
-run = 4753
+run = 4501
 
 LoadEventNexus(Filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_{}.nxs.h5'.format(run),OutputWorkspace='ws')
-LoadInstrument(Workspace='ws',Filename='/SNS/users/rwp/wand/single3/WAND_Definition2.xml')
+LoadInstrument(Workspace='ws',Filename='/SNS/users/rwp/wand/single3/WAND_Definition2.xml',RewriteSpectraMap=False)
 Integration(InputWorkspace='ws',OutputWorkspace='ws')
 MaskDetectors('ws',DetectorList=range(16384))
 #GroupDetectors(InputWorkspace='ws',OutputWorkspace='ws',CopyGroupingFromWorkspace='van')
