@@ -25,3 +25,7 @@ print(p0.getQSampleFrame())
 print(p0.getQLabFrame())
 print(p0.getWavelength())
 print(p0.getGoniometerMatrix())
+k=2*np.pi/1.544
+print(np.sum(np.square(p0.getQSampleFrame())))
+phi = mtd['md_lab'].getExperimentInfo(0).getInstrument().getDetector(p0.getDetectorID()).getPhi()
+print(phi)
