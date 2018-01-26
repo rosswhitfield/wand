@@ -17,9 +17,11 @@ print(ws.run().getGoniometer().getR())
 ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md_sample')
 ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_lab', OutputWorkspace='md_lab')
 
-FindPeaksMD(InputWorkspace='md_sample', PeakDistanceThreshold=0.5, DensityThresholdFactor=200, OutputWorkspace='peaks')
-FindPeaksMD(InputWorkspace='md_lab', PeakDistanceThreshold=0.5, DensityThresholdFactor=200, OutputWorkspace='peaks_lab')
+FindPeaksMD(InputWorkspace='md_sample', PeakDistanceThreshold=0.5, DensityThresholdFactor=500, OutputWorkspace='peaks')
+FindPeaksMD(InputWorkspace='md_lab', PeakDistanceThreshold=0.5, DensityThresholdFactor=500, OutputWorkspace='peaks_lab')
 
 p0=mtd['peaks'].getPeak(0)
 print(p0.getQSampleFrame())
 print(p0.getQLabFrame())
+print(p0.getWavelength())
+print(p0.getGoniometerMatrix())
