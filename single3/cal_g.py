@@ -25,7 +25,19 @@ print(p0.getQSampleFrame())
 print(p0.getQLabFrame())
 print(p0.getWavelength())
 print(p0.getGoniometerMatrix())
-k=2*np.pi/1.544
-print(np.sum(np.square(p0.getQSampleFrame())))
-phi = mtd['md_lab'].getExperimentInfo(0).getInstrument().getDetector(p0.getDetectorID()).getPhi()
-print(phi)
+
+k=2*np.pi/1.488
+print(k)
+q2=np.sum(np.square(p0.getQSampleFrame()))
+print(q2)
+twoTheta = mtd['md_lab'].getExperimentInfo(0).getInstrument().getDetector(p0.getDetectorID()).getTwoTheta(V3D(0,0,0),V3D(0,0,1))
+print(twoTheta)
+print(2*k**2*(1-np.cos(twoTheta)))
+print(np.sqrt(q2/(2*(1-np.cos(twoTheta)))))
+
+
+ql = p0.getQLabFrame()
+qs = p0.getQSampleFrame()
+g = p0.getGoniometerMatrix()
+ql2 = np.dot(g, qs)
+print(ql,ql2)
