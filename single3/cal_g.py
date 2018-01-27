@@ -41,3 +41,9 @@ qs = p0.getQSampleFrame()
 g = p0.getGoniometerMatrix()
 ql2 = np.dot(g, qs)
 print(ql,ql2)
+
+
+norm_q=np.linalg.norm(ql)
+refBeamFrame=[0,0,1]
+qBeam = np.dot(ql,refBeamFrame)
+print(norm_q**2/2/qBeam)
