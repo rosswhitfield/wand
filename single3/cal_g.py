@@ -44,6 +44,6 @@ print(ql,ql2)
 
 
 norm_q=np.linalg.norm(ql)
-refBeamFrame=[0,0,1]
+refBeamFrame=mtd['md_lab'].getExperimentInfo(0).getInstrument().getReferenceFrame().vecPointingAlongBeam()
 qBeam = np.dot(ql,refBeamFrame)
 print(norm_q**2/2/qBeam)
