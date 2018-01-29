@@ -1,8 +1,8 @@
 from mantid.simpleapi import *
 
-van = LoadNexus(Filename='/HFIR/HB2C/IPTS-7776/shared/autoreduction/HB2C_2933.nxs')
+van = LoadNexus(Filename='/HFIR/HB2C/IPTS-7776/shared/autoreduce/HB2C_2933.nxs')
 
-si = LoadNexus(Filename='/HFIR/HB2C/IPTS-7776/shared/autoreduction/HB2C_2929.nxs')
+si = LoadNexus(Filename='/HFIR/HB2C/IPTS-7776/shared/autoreduce/HB2C_2929.nxs')
 
 norm = si/van
 norm=ReplaceSpecialValues(norm, NaNValue=0, InfinityValue=0)
@@ -52,7 +52,7 @@ q2=si_q2/van_q2
 
 
 
-cu = LoadNexus(Filename='/HFIR/HB2C/IPTS-7776/shared/autoreduction/HB2C_2930.nxs')
+cu = LoadNexus(Filename='/HFIR/HB2C/IPTS-7776/shared/autoreduce/HB2C_2930.nxs')
 cu_norm = cu/van
 cu_norm=ReplaceSpecialValues(cu_norm, NaNValue=0, InfinityValue=0)
 
@@ -62,7 +62,7 @@ cu_2theta2=ResampleX(cu_2theta,XMin=20,XMax=135,NumberBins=2300)
 cu_twotheta2=cu_2theta2/van_2theta2
 
 
-NCFA = LoadNexus(Filename='/HFIR/HB2C/IPTS-7776/shared/autoreduction/HB2C_2931.nxs')
+NCFA = LoadNexus(Filename='/HFIR/HB2C/IPTS-7776/shared/autoreduce/HB2C_2931.nxs')
 NCFA_norm = NCFA/van
 NCFA_norm=ReplaceSpecialValues(NCFA_norm, NaNValue=0, InfinityValue=0)
 
