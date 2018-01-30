@@ -8,7 +8,7 @@ with h5py.File('/HFIR/HB2C/IPTS-7776/shared/autoreduce/HB2C_{}_group_4x4.nxs'.fo
     van = f['mantid_workspace_1/workspace/values'].value.reshape((960,128))
 
 runs=range(2952,4754)
-runs=range(2996,3347)
+runs=range(2996,3480)
 
 a=np.zeros((len(runs),480*2,128))
 angle=np.zeros(len(runs))
