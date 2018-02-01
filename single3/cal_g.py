@@ -47,3 +47,11 @@ norm_q=np.linalg.norm(ql)
 refBeamFrame=mtd['md_lab'].getExperimentInfo(0).getInstrument().getReferenceFrame().vecPointingAlongBeam()
 qBeam = np.dot(ql,refBeamFrame)
 print(norm_q**2/2/qBeam)
+
+i=mtd['md_lab'].getExperimentInfo(0).getInstrument()
+for d in xrange(512*480*8):
+    det=i.getDetector(d)
+    phi=det.getPhi()
+    theta=det.getTwoTheta(V3D(0,0,0),V3D(0,0,1))
+    ql=[-k*np.sin(theta)*np.cos(phi), -k*np.sin(theta)*np.sin(phi), k*(1-np.cos(theta)]
+    print(d,ql)
