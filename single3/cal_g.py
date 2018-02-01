@@ -41,7 +41,7 @@ qs = p0.getQSampleFrame()
 g = p0.getGoniometerMatrix()
 ql2 = np.dot(g, qs)
 print(ql,ql2)
-
+print(qs)
 
 norm_q=np.linalg.norm(ql)
 refBeamFrame=mtd['md_lab'].getExperimentInfo(0).getInstrument().getReferenceFrame().vecPointingAlongBeam()
@@ -49,9 +49,25 @@ qBeam = np.dot(ql,refBeamFrame)
 print(norm_q**2/2/qBeam)
 
 i=mtd['md_lab'].getExperimentInfo(0).getInstrument()
-for d in xrange(512*480*8):
+
+# just look at y component first
+for d in range(512):
     det=i.getDetector(d)
     phi=det.getPhi()
     theta=det.getTwoTheta(V3D(0,0,0),V3D(0,0,1))
-    ql=[-k*np.sin(theta)*np.cos(phi), -k*np.sin(theta)*np.sin(phi), k*(1-np.cos(theta)]
+    #ql=[-k*np.sin(theta)*np.cos(phi), -k*np.sin(theta)*np.sin(phi), k*(1-np.cos(theta))]
+    #print(d,ql)
+    ql_y=-k*np.sin(theta)*np.sin(phi)
+    if np.abs(qs[1]-ql_y)<0.00001:
+        d_y=d
+        print(d_y,ql_y)
+        break
+
+# now find x and z
+for d in range(480*8):
+    det=i.getDetector(d*512+d_y)
+    phi=det.getPhi()
+    theta=det.getTwoTheta(V3D(0,0,0),V3D(0,0,1))
+    ql=[-k*np.sin(theta)*np.cos(phi), -k*np.sin(theta)*np.sin(phi), k*(1-np.cos(theta))]
     print(d,ql)
+    
