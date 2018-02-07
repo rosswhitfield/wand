@@ -54,12 +54,17 @@ print(norm_q**2/2/qBeam)
 k=2*np.pi/1.488
 qs = p0.getQSampleFrame()
 
-#cos(theta) = 1-Q^2/(2*k^2(
+#cos(theta) = 1-Q^2/(2*k^2)
 theta = np.arccos(1-np.linalg.norm(qs)**2/(2*k**2))
+qsx=qs[0]
 qsy=qs[1]
+qsz=qs[2]
 phi = np.arcsin(-qsy/(k*np.sin(theta)))
 qlx = -k*np.sin(theta)*np.cos(phi)
 qly = -k*np.sin(theta)*np.sin(phi)
 qlz = k*(1-np.cos(theta))
 print(qlx, qly, qlz)
+
+r = np.arcsin((qlx-qlz*qsx/qsz)/(qsz*(1+qsx**2/qsz**2)))
+print(r*180/np.pi)
 
