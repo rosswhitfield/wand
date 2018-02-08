@@ -68,3 +68,6 @@ print(qlx, qly, qlz)
 r = np.arcsin((qlx-qlz*qsx/qsz)/(qsz*(1+qsx**2/qsz**2)))
 print(r*180/np.pi)
 
+
+q=np.linalg.inv([[qsx, qsz],[qsz, qsz]])*np.array([qlx, qlz])
+
