@@ -69,5 +69,7 @@ r = np.arcsin((qlx-qlz*qsx/qsz)/(qsz*(1+qsx**2/qsz**2)))
 print(r*180/np.pi)
 
 
-q=np.linalg.inv([[qsx, qsz],[qsz, qsz]])*np.array([qlx, qlz])
+q=np.dot(np.linalg.inv([[qsx, qsz],[qsz, -qsx]]),np.array([qlx, qlz]))
 
+r2 = np.arctan2(q[1], q[0])
+print(r2*180/np.pi)
