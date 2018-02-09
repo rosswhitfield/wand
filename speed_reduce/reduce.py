@@ -9,6 +9,7 @@ from mantid import logger
 t0=time.time()
 nexus_file='/HFIR/HB2C/IPTS-7776/nexus/HB2C_3000.nxs.h5' # Samll ~25sec
 nexus_file='/HFIR/HB2C/IPTS-7776/nexus/HB2C_6578.nxs.h5' # Si ~1000sec
+nexus_file='/HFIR/HB2C/IPTS-7776/nexus/HB2C_6586.nxs.h5' # V ~18380sec
 output_directory='/tmp'
 output_file=os.path.split(nexus_file)[-1].replace('.nxs.h5','')
 ipts = nexus_file.split('/')[3]
