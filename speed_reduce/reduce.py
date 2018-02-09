@@ -8,8 +8,8 @@ from mantid import logger
 
 t0=time.time()
 nexus_file='/HFIR/HB2C/IPTS-7776/nexus/HB2C_3000.nxs.h5' # Samll ~25sec
-nexus_file='/HFIR/HB2C/IPTS-7776/nexus/HB2C_6578.nxs.h5' # Si ~1000sec
-nexus_file='/HFIR/HB2C/IPTS-7776/nexus/HB2C_6586.nxs.h5' # V ~18380sec
+#nexus_file='/HFIR/HB2C/IPTS-7776/nexus/HB2C_6578.nxs.h5' # Si ~1000sec
+#nexus_file='/HFIR/HB2C/IPTS-7776/nexus/HB2C_6586.nxs.h5' # V ~18380sec
 output_directory='/tmp'
 output_file=os.path.split(nexus_file)[-1].replace('.nxs.h5','')
 ipts = nexus_file.split('/')[3]
@@ -23,23 +23,23 @@ for idx in xrange(ws.getNumberHistograms()):
     ws.setX(idx, w)
 SetGoniometer('ws', Axis0="HB2C:Mot:s1,0,1,0,1")
 RemoveLogs('ws', KeepLogs="HB2C:Mot:s1")
-ws=Transpose('ws')
+#ws=Transpose('ws')
 t1=time.time()
 SaveNexus('ws',os.path.join(output_directory,output_file+".nxs"))
 t2=time.time()
-#ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md')
+ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md')
 t3=time.time()
-#SaveMD('md',os.path.join(output_directory,output_file+"_MDE.nxs"))
+SaveMD('md',os.path.join(output_directory,output_file+"_MDE.nxs"))
 t4=time.time()
 
 # Group data
-#ws = GroupDetectors('ws', MapFile='/HFIR/HB2C/shared/autoreduce/HB2C_4x4.map')
+ws = GroupDetectors('ws', MapFile='/HFIR/HB2C/shared/autoreduce/HB2C_4x4.map')
 t5=time.time()
-#SaveNexus('ws',os.path.join(output_directory,output_file+"_group_4x4.nxs"))
+SaveNexus('ws',os.path.join(output_directory,output_file+"_group_4x4.nxs"))
 t6=time.time()
-#ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md')
+ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md')
 t7=time.time()
-#SaveMD('md',os.path.join(output_directory,output_file+"_group_4x4_MDE.nxs"))
+SaveMD('md',os.path.join(output_directory,output_file+"_group_4x4_MDE.nxs"))
 t8=time.time()
 
 logger.notice('t1={}'.format(t1-t0))
@@ -55,11 +55,11 @@ logger.notice('t8={}'.format(t8-t7))
 t10=time.time()
 ws=LoadNexus(os.path.join(output_directory,output_file+".nxs"))
 t11=time.time()
-#md=LoadMD(os.path.join(output_directory,output_file+"_MDE.nxs"))
+md=LoadMD(os.path.join(output_directory,output_file+"_MDE.nxs"))
 t12=time.time()
-#ws=LoadNexus(os.path.join(output_directory,output_file+"_group_4x4.nxs"))
+ws=LoadNexus(os.path.join(output_directory,output_file+"_group_4x4.nxs"))
 t13=time.time()
-#md=LoadMD(os.path.join(output_directory,output_file+"_group_4x4_MDE.nxs"))
+md=LoadMD(os.path.join(output_directory,output_file+"_group_4x4_MDE.nxs"))
 t14=time.time()
 
 logger.notice('t11={}'.format(t11-t10))
