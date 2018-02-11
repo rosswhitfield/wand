@@ -8,12 +8,14 @@ LoadEmptyInstrument(Filename='/SNS/users/rwp/wand/IDF/test4/WAND_Definition_2952
 m2=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
 LoadEmptyInstrument(Filename='/SNS/users/rwp/wand/IDF/test4/WAND_Definition.xml', OutputWorkspace='wand')
 m3=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-AddSampleLog('wand', LogName='HB2C:Mot:s2', LogText='17.57', LogType='Number Series')
-AddSampleLog('wand', LogName='HB2C:Mot:detz', LogText='7.05159', LogType='Number Series')
-LoadInstrument('wand',Filename='/SNS/users/rwp/wand/IDF/test4/WAND_Definition.xml', RewriteSpectraMap=False)
+AddSampleLog('wand', LogName='HB2C:Mot:s2.RBV', LogText='17.57', LogType='Number Series')
+AddSampleLog('wand', LogName='HB2C:Mot:detz.RBV', LogText='7.05159', LogType='Number Series')
 m4=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+LoadInstrument('wand',Filename='/SNS/users/rwp/wand/IDF/test4/WAND_Definition.xml', RewriteSpectraMap=False)
+m5=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
 
 print(m1-m0)
 print(m2-m1)
 print(m3-m2)
 print(m4-m3)
+print(m5-m4)
