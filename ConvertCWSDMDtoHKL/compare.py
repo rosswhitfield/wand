@@ -19,3 +19,7 @@ ConvertCWSDMDtoHKL('md', UBMatrix=ub, OutputWorkspace='md2')
 
 BinMD(InputWorkspace='md1', AlignedDim0='[H,0,0],-0.5,0.5,11', AlignedDim1='[0,K,0],-10,10,101', AlignedDim2='[0,0,L],-10,10,101', OutputWorkspace='mdh1')
 BinMD(InputWorkspace='md2', AlignedDim0='H,-0.5,0.5,11', AlignedDim1='K,-10,10,101', AlignedDim2='L,-10,10,101', OutputWorkspace='mdh2')
+
+print(mtd['mdh1'].getSignalArray().sum())
+print(mtd['mdh2'].getSignalArray().sum())
+
