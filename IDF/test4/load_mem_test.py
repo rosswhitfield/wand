@@ -19,18 +19,26 @@ print(m2-m1)
 print(m3-m2)
 print(m4-m3)
 print(m5-m4)
+print(m0)
+print(m1)
+print(m2)
+print(m3)
+print(m4)
+print(m5)
 
 for n in range(5):
     m10=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     LoadEmptyInstrument(Filename='/SNS/users/rwp/wand/IDF/test4/WAND_Definition_2952.xml', OutputWorkspace='wand{}'.format(n+300))
     m13=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     print("rect",m13-m10)
+    print(m13)
 
 for n in range(5):
     m10=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     LoadEmptyInstrument(Filename='/SNS/users/rwp/wand/IDF/test4/WAND_Definition_fixed.xml', OutputWorkspace='wand{}'.format(n+100))
     m13=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     print("fixed",m13-m10)
+    print(m13)
 
 
 for n in range(5):
@@ -38,6 +46,7 @@ for n in range(5):
     LoadEmptyInstrument(Filename='/SNS/users/rwp/wand/IDF/test4/WAND_Definition.xml', OutputWorkspace='wand{}'.format(n+200))
     m13=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     print("wand",m13-m10)
+    print(m13)
 
 
 for n in range(5):
@@ -53,3 +62,4 @@ for n in range(5):
     print(m12-m11)
     print(m13-m12)
     print(m13-m10)
+    print(m13)
