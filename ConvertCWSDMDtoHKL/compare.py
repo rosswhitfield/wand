@@ -29,14 +29,24 @@ ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL', 
 
 ConvertCWSDMDtoHKL('md', UBMatrix=ub, OutputWorkspace='md2')
 
-proj_id = Projection([1,0,0], [0,1,0], [0,0,1])
-proj_ws = proj_id.createWorkspace()
-SetUB('md',UB=ub)
-md3=CutMD(InputWorkspace='md',Projection=proj_ws, PBins=([-10, 0.05,10], [-10,0.05,10],[-10,0.05,10]),InterpretQDimensionUnits= 'Q in A^-1',NoPix=True)
+#proj_id = Projection([1,0,0], [0,1,0], [0,0,1])
+#proj_ws = proj_id.createWorkspace()
+#SetUB('md',UB=ub)
+#md3=CutMD(InputWorkspace='md',Projection=proj_ws, PBins=([-10, 0.05,10], [-10,0.05,10],[-10,0.05,10]),InterpretQDimensionUnits= 'Q in A^-1',NoPix=True)
 
+ol=ws.sample().getOrientedLattice()
+q1=ol.qFromHKL([1,0,0])
+q2=ol.qFromHKL([0,1,0])
+q3=ol.qFromHKL([0,0,1])
 
 BinMD(InputWorkspace='md1', AlignedDim0='[H,0,0],-0.5,0.5,11', AlignedDim1='[0,K,0],-10,10,101', AlignedDim2='[0,0,L],-10,10,101', OutputWorkspace='mdh1')
 BinMD(InputWorkspace='md2', AlignedDim0='H,-0.5,0.5,11', AlignedDim1='K,-10,10,101', AlignedDim2='L,-10,10,101', OutputWorkspace='mdh2')
+BinMD(InputWorkspace='md',AxisAligned=False,
+BasisVector0='[H,0,0],A^-1,{},{},{}'.format(q1.X(),q1.Y(),q1.Z()),
+BasisVector1='[0,K,0],A^-1,{},{},{}'.format(q2.X(),q2.Y(),q2.Z()),
+BasisVector2='[0,0,L],A^-1,{},{},{}'.format(q3.X(),q3.Y(),q3.Z()),
+OutputExtents=[-0.5,0.5,-10,10,-10,10], OutputBins=[11, 101, 101],
+OutputWorkspace='mdh3')
 
 print(mtd['mdh1'].getSignalArray().sum())
 print(mtd['mdh2'].getSignalArray().sum())
