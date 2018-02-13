@@ -1,6 +1,6 @@
 from mantid.simpleapi import *
 
-nexus_file='/HFIR/HB2C/IPTS-7776/nexus/HB2C_3000.nxs.h5'
+nexus_file='/SNS/users/rwp/HB2C_3000.nxs.h5'
 output_directory='/tmp'
 output_file=os.path.split(nexus_file)[-1].replace('.nxs.h5','')
 ipts = nexus_file.split('/')[3]

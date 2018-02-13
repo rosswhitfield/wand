@@ -7,7 +7,7 @@ from mantid.simpleapi import *
 from mantid import logger
 
 t0=time.time()
-nexus_file='/HFIR/HB2C/IPTS-7776/nexus/HB2C_3000.nxs.h5' # Samll ~25sec
+nexus_file='/SNS/users/rwp/HB2C_3000.nxs.h5' # Samll ~25sec
 #nexus_file='/HFIR/HB2C/IPTS-7776/nexus/HB2C_6578.nxs.h5' # Si ~1000sec
 #nexus_file='/HFIR/HB2C/IPTS-7776/nexus/HB2C_6586.nxs.h5' # V ~18380sec
 output_directory='/tmp'
@@ -33,7 +33,7 @@ SaveMD('md',os.path.join(output_directory,output_file+"_MDE.nxs"))
 t4=time.time()
 
 # Group data
-ws = GroupDetectors('ws', MapFile='/HFIR/HB2C/shared/autoreduce/HB2C_4x4.map')
+ws = GroupDetectors('ws', MapFile='/SNS/users/rwp/HB2C_4x4.map')
 t5=time.time()
 SaveNexus('ws',os.path.join(output_directory,output_file+"_group_4x4.nxs"))
 t6=time.time()
