@@ -1,4 +1,5 @@
 from mantid.simpleapi import *
+from mantid.api import Projection
 
 nexus_file='/SNS/users/rwp/HB2C_3000.nxs.h5'
 output_directory='/tmp'
@@ -27,6 +28,12 @@ ub=mtd['ws'].sample().getOrientedLattice().getUB().copy()
 ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='md1')
 
 ConvertCWSDMDtoHKL('md', UBMatrix=ub, OutputWorkspace='md2')
+
+proj_id = Projection([1,0,0], [0,1,0], [0,0,1])
+proj_ws = proj_id.createWorkspace()
+SetUB('md',UB=ub)
+md3=CutMD(InputWorkspace='md',Projection=proj_ws, PBins=([-10, 0.05,10], [-10,0.05,10],[-10,0.05,10]),InterpretQDimensionUnits= 'Q in A^-1',NoPix=True)
+
 
 BinMD(InputWorkspace='md1', AlignedDim0='[H,0,0],-0.5,0.5,11', AlignedDim1='[0,K,0],-10,10,101', AlignedDim2='[0,0,L],-10,10,101', OutputWorkspace='mdh1')
 BinMD(InputWorkspace='md2', AlignedDim0='H,-0.5,0.5,11', AlignedDim1='K,-10,10,101', AlignedDim2='L,-10,10,101', OutputWorkspace='mdh2')
