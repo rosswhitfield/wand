@@ -50,25 +50,18 @@ def convertToHKL(ws, norm=None, UB=None):
                 ConvertToMD(norm, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL'))
 
 
-def convertQSampleToHKL(ws, norm=None, UB=None, hist=True, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101]):
+def convertQSampleToHKL(ws, norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101]):
     ol = OrientedLattice()
     ol.setUB(UB)
     q1 = ol.qFromHKL([1, 0, 0])
     q2 = ol.qFromHKL([0, 1, 0])
     q3 = ol.qFromHKL([0, 0, 1])
     # mtd['__bkg'].run().getGoniometer().setR(mtd['__run'].run().getGoniometer().getR())
-    if hist:
-        return BinMD(InputWorkspace=ws, AxisAligned=False,
-                     BasisVector0='[H,0,0],A^-1,{},{},{}'.format(q1.X(), q1.Y(), q1.Z()),
-                     BasisVector1='[0,K,0],A^-1,{},{},{}'.format(q2.X(), q2.Y(), q2.Z()),
-                     BasisVector2='[0,0,L],A^-1,{},{},{}'.format(q3.X(), q3.Y(), q3.Z()),
-                     OutputExtents=Extents, OutputBins=Bins)
-    else:
-        return SliceMD(InputWorkspace=ws, AxisAligned=False,
-                       BasisVector0='[H,0,0],A^-1,{},{},{}'.format(q1.X(), q1.Y(), q1.Z()),
-                       BasisVector1='[0,K,0],A^-1,{},{},{}'.format(q2.X(), q2.Y(), q2.Z()),
-                       BasisVector2='[0,0,L],A^-1,{},{},{}'.format(q3.X(), q3.Y(), q3.Z()),
-                       OutputExtents=Extents, OutputBins=Bins)
+    return BinMD(InputWorkspace=ws, AxisAligned=False,
+                 BasisVector0='[H,0,0],A^-1,{},{},{}'.format(q1.X(), q1.Y(), q1.Z()),
+                 BasisVector1='[0,K,0],A^-1,{},{},{}'.format(q2.X(), q2.Y(), q2.Z()),
+                 BasisVector2='[0,0,L],A^-1,{},{},{}'.format(q3.X(), q3.Y(), q3.Z()),
+                 OutputExtents=Extents, OutputBins=Bins)
 
 
 def accumlateMD(accum, ws):
