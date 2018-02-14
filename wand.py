@@ -32,23 +32,22 @@ def reduceToPowder(ws, OutputWorkspace, norm=None, taget='Theta', XMin=10, XMax=
     return mtd[OutputWorkspace]
 
 
-def convertToMD(ws, norm=None, UB=None):
+def convertToQSample(ws):
     """Output MDEventWorkspace in Q Sample
     """
-    if UB is None:
-        if norm is None:
-            return ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample')
-        else:
-            return (ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample'),
-                    ConvertToMD(norm, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample'))
+    return ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample')
+
+
+def convertToHKL(ws, norm=None, UB=None):
+    """Output MDEventWorkspace in Q Sample
+    """
+    SetUB(ws, UB=UB)
+    if norm is None:
+        return ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL')
     else:
-        SetUB(ws, UB=UB)
-        if norm is None:
-            return ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL')
-        else:
-            SetUB(norm, UB=UB)
-            return (ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL'),
-                    ConvertToMD(norm, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL'))
+        SetUB(norm, UB=UB)
+        return (ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL'),
+                ConvertToMD(norm, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL'))
 
 
 def convertQSampleToHKL(ws, norm=None, UB=None, hist=True, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101]):
@@ -57,6 +56,7 @@ def convertQSampleToHKL(ws, norm=None, UB=None, hist=True, Extents=[-10, 10, -10
     q1 = ol.qFromHKL([1, 0, 0])
     q2 = ol.qFromHKL([0, 1, 0])
     q3 = ol.qFromHKL([0, 0, 1])
+    # mtd['__bkg'].run().getGoniometer().setR(mtd['__run'].run().getGoniometer().getR())
     if hist:
         return BinMD(InputWorkspace=ws, AxisAligned=False,
                      BasisVector0='[H,0,0],A^-1,{},{},{}'.format(q1.X(), q1.Y(), q1.Z()),
