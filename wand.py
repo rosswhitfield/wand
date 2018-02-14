@@ -19,6 +19,7 @@ def loadIntegrateData(filename, wavelength=1.488):
 
 
 def reduceToPowder(ws, norm=None, taget='Theta', XMin=10, XMax=135, NumberBins=2500):
+    # Add scale by monitor
     ConvertSpectrumAxis(InputWorkspace=ws, Target=taget, OutputWorkspace='__out')
     Transpose(InputWorkspace='__out', OutputWorkspace='__out')
     ResampleX(InputWorkspace='__out', OutputWorkspace='__out', XMin=XMin, XMax=XMax, NumberBins=NumberBins)
