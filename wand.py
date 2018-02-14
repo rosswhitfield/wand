@@ -1,7 +1,7 @@
 from mantid.simpleapi import (LoadEventNexus, Integration, MaskDetectors, mtd,
                               SetGoniometer, ConvertSpectrumAxis, Transpose,
                               ResampleX, ConvertToMD, SetUB, BinMD, SliceMD,
-                              PlusMD, CloneMDWorkspace)
+                              PlusMD, CloneMDWorkspace, Divide, DeleteWorkspace)
 from mantid.geometry import OrientedLattice
 import numpy as np
 

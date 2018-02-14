@@ -20,7 +20,7 @@ output_directory=sys.argv[2]
 output_file=os.path.split(nexus_file)[-1].replace('.nxs.h5','')
 ipts = nexus_file.split('/')[3]
 
-ws = LoadEventNexus(Filename=filename)
+ws = LoadEventNexus(Filename=filename,FilterMonByTimeStop=1350)
 ws = Integration(ws)
 MaskDetectors(ws,DetectorList=range(16384))
 ws.getAxis(0).setUnit("Wavelength")
