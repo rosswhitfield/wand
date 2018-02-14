@@ -6,7 +6,7 @@ from mantid.geometry import OrientedLattice
 import numpy as np
 
 
-def loadIntegrateData(filename, wavelength=1.488):
+def loadIntegrateData(filename, OutputWorkspace, wavelength=1.488):
     LoadEventNexus(Filename=filename, OutputWorkspace='__ws')
     Integration(InputWorkspace='__ws', OutputWorkspace='__ws')
     MaskDetectors('__ws', DetectorList=range(16384))
@@ -18,18 +18,18 @@ def loadIntegrateData(filename, wavelength=1.488):
     return mtd['__ws']
 
 
-def reduceToPowder(ws, norm=None, taget='Theta', XMin=10, XMax=135, NumberBins=2500):
+def reduceToPowder(ws, OutputWorkspace, norm=None, taget='Theta', XMin=10, XMax=135, NumberBins=2500):
     # Add scale by monitor
-    ConvertSpectrumAxis(InputWorkspace=ws, Target=taget, OutputWorkspace='__out')
-    Transpose(InputWorkspace='__out', OutputWorkspace='__out')
-    ResampleX(InputWorkspace='__out', OutputWorkspace='__out', XMin=XMin, XMax=XMax, NumberBins=NumberBins)
-    if norm is None:
-        return mtd['__out']
-    else:
+    ConvertSpectrumAxis(InputWorkspace=ws, Target=taget, OutputWorkspace=OutputWorkspace)
+    Transpose(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace)
+    ResampleX(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace, XMin=XMin, XMax=XMax, NumberBins=NumberBins)
+    if norm is not None:
         ConvertSpectrumAxis(InputWorkspace=norm, Target=taget, OutputWorkspace='__norm')
         Transpose(InputWorkspace='__norm', OutputWorkspace='__norm')
         ResampleX(InputWorkspace='__norm', OutputWorkspace='__norm', XMin=XMin, XMax=XMax, NumberBins=NumberBins)
-        return mtd['__out']/mtd['__norm']
+        Divide(LHSWorkspace=OutputWorkspace,RHSWorkspace='__norm',OutputWorkspace=OutputWorkspace)
+        DeleteWorkspace('__norm')
+    return mtd[OutputWorkspace]
 
 
 def convertToMD(ws, norm=None, UB=None):
