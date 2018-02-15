@@ -28,7 +28,7 @@ w = np.array([1.487,1.489])
 for idx in xrange(ws.getNumberHistograms()):
     ws.setX(idx, w)
 SetGoniometer('ws', Axis0="HB2C:Mot:s1,0,1,0,1")
-#SaveNexus('ws',os.path.join(output_directory,output_file+".nxs"))
+SaveNexus('ws',os.path.join(output_directory,output_file+".nxs"))
 ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample', OutputWorkspace='md')
 SaveMD('md',os.path.join(output_directory,output_file+"_MDE.nxs"))
 
