@@ -58,5 +58,5 @@ OutputWorkspace='mdh3')
 
 print(mtd['mdh1'].getSignalArray().sum())
 print(mtd['mdh2'].getSignalArray().sum())
-
+print(mtd['mdh3'].getSignalArray().sum())
 
