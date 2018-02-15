@@ -26,6 +26,7 @@ LoadIsawUB('ws','/SNS/users/rwp/wand/single4/nacl.mat')
 ub=mtd['ws'].sample().getOrientedLattice().getUB().copy()
 
 ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='md1')
+ConvertToMD('ws', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL', QConversionScales='HKL',OutputWorkspace='md1_hkl')
 
 ConvertCWSDMDtoHKL('md', UBMatrix=ub, OutputWorkspace='md2')
 
@@ -48,6 +49,7 @@ OutputWorkspace='md3')
 
 
 BinMD(InputWorkspace='md1', AlignedDim0='[H,0,0],-0.5,0.5,11', AlignedDim1='[0,K,0],-10,10,101', AlignedDim2='[0,0,L],-10,10,101', OutputWorkspace='mdh1')
+BinMD(InputWorkspace='md1_hkl', AlignedDim0='[H,0,0],-0.5,0.5,11', AlignedDim1='[0,K,0],-10,10,101', AlignedDim2='[0,0,L],-10,10,101', OutputWorkspace='mdh1_hkl')
 BinMD(InputWorkspace='md2', AlignedDim0='H,-0.5,0.5,11', AlignedDim1='K,-10,10,101', AlignedDim2='L,-10,10,101', OutputWorkspace='mdh2')
 BinMD(InputWorkspace='md',AxisAligned=False,
 BasisVector0='[H,0,0],A^-1,{},{},{}'.format(q1.X(),q1.Y(),q1.Z()),
