@@ -23,13 +23,13 @@ for run in range(4756,6558,1):
     mtd['van'].run().getGoniometer().setR(mtd['md'].getExperimentInfo(0).run().getGoniometer().getR())
     
     #BinMD(InputWorkspace='md', OutputWorkspace='mdh', AlignedDim0='Q_sample_x,-10,10,401', AlignedDim1='Q_sample_y,-1,1,41', AlignedDim2='Q_sample_z,-10,10,401')
-    BinMD(InputWorkspace='md',OutputWorkspace='mdh', AxisAligned=False,
+    BinMD(InputWorkspace='md',OutputWorkspace='mdh', AxisAligned=False, NormalizeBasisVectors=False,
           BasisVector0='[H,0,0],A^-1,{},{},{}'.format(q1.X(), q1.Y(), q1.Z()),
           BasisVector1='[0,K,0],A^-1,{},{},{}'.format(q2.X(), q2.Y(), q2.Z()),
           BasisVector2='[0,0,L],A^-1,{},{},{}'.format(q3.X(), q3.Y(), q3.Z()),
           OutputExtents='-8,8,-8,8,-1.5,2.5', OutputBins='401,401,101')
     
-    ConvertToMD('van', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='van_md',MinValues='-10,-10,-10',MaxValues='10,10,10')
+    ConvertToMD('van', QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL', QConversionScales='HKL', OutputWorkspace='van_md',MinValues='-10,-10,-10',MaxValues='10,10,10')
     BinMD(InputWorkspace='van_md', OutputWorkspace='van_mdh',  AlignedDim0='[H,0,0],-8,8,401', AlignedDim1='[0,K,0],-8,8,401', AlignedDim2='[0,0,L],-1.5,2.5,101')
     if 'data' in mtd:
         PlusMD(LHSWorkspace='data', RHSWorkspace='mdh', OutputWorkspace='data')
