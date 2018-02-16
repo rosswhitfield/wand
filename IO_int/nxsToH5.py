@@ -13,4 +13,12 @@ detz=van.run().getLogData('HB2C:Mot:detz.RBV').timeAverageValue()
 s1=van.run().getLogData('HB2C:Mot:s1').timeAverageValue()
 w=1.488
 
-f = h5py.File('HB2C_{}.nxs'.format(run), 'r')
+with h5py.File('HB2C_{}.nxs'.format(run), 'w') as f:
+    data = f.create_group("data")
+    data.attrs['instrument'] = 'WAND'
+    data.attrs['wavelength'] = w
+    data.attrs['s1'] = s1
+    data.attrs['s2'] = s2
+    data.attrs['detz'] = detz
+    dset = data.create_dataset("y", data=y)
+    dset = data.create_dataset("e", data=e)
