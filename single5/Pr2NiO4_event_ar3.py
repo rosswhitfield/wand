@@ -10,10 +10,9 @@ for run in range(4756,6557,5):
     else:
         CloneMDWorkspace(InputWorkspace='md', OutputWorkspace='dataE')
 
-
 FindPeaksMD(InputWorkspace='dataE', PeakDistanceThreshold=0.2, DensityThresholdFactor=500, CalculateGoniometerForCW=True, Wavelength=1.488, OutputWorkspace='peaks')
 FindUBUsingFFT('peaks',MinD=3,MaxD=15)
 ShowPossibleCells('peaks')
 SelectCellWithForm('peaks',FormNumber=42,Apply=True)
 OptimizeLatticeForCellType('peaks', CellType='Orthorhombic',Apply=True)
-SaveIsawUB('peaks',Filename='/SNS/users/rwp/PNO.mat')
+#SaveIsawUB('peaks',Filename='/SNS/users/rwp/PNO.mat')
