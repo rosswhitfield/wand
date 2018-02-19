@@ -16,3 +16,15 @@ ShowPossibleCells('peaks')
 SelectCellWithForm('peaks',FormNumber=42,Apply=True)
 OptimizeLatticeForCellType('peaks', CellType='Orthorhombic',Apply=True)
 #SaveIsawUB('peaks',Filename='/SNS/users/rwp/PNO.mat')
+
+
+
+LoadIsawUB('van','/SNS/users/rwp/wand/single5/PNO_T.mat')
+ub=mtd['van'].sample().getOrientedLattice().getUB().copy()
+
+ol = OrientedLattice()
+ol.setUB(ub)
+q1 = ol.qFromHKL([1, 0, 0])
+q2 = ol.qFromHKL([0, 1, 0])
+q3 = ol.qFromHKL([0, 0, 1])
+
