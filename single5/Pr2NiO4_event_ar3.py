@@ -17,6 +17,8 @@ SelectCellWithForm('peaks',FormNumber=13,Apply=True)
 OptimizeLatticeForCellType('peaks', CellType='Orthorhombic',Apply=True)
 ub=mtd['peaks'].sample().getOrientedLattice().getUB().copy()
 
+FindUBUsingLatticeParameters('peaks',5.49,5.49,12.17,90,90,90)
+ub=mtd['peaks'].sample().getOrientedLattice().getUB().copy()
 
 
 ol = OrientedLattice()
