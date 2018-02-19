@@ -6,16 +6,16 @@ from mantid.geometry import OrientedLattice
 import numpy as np
 
 
-def loadIntegrateData(filename, OutputWorkspace, wavelength=1.488):
-    LoadEventNexus(Filename=filename, OutputWorkspace='__ws')
-    Integration(InputWorkspace='__ws', OutputWorkspace='__ws')
-    MaskDetectors('__ws', DetectorList=range(16384))
-    mtd['__ws'].getAxis(0).setUnit("Wavelength")
+def loadIntegrateData(filename, OutputWorkspace='__ws', wavelength=1.488):
+    LoadEventNexus(Filename=filename, OutputWorkspace=OutputWorkspace)
+    Integration(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace)
+    MaskDetectors(OutputWorkspace, DetectorList=range(16384))
+    mtd[OutputWorkspace].getAxis(0).setUnit("Wavelength")
     w = np.array([wavelength-0.001, wavelength+0.001])
-    for idx in range(mtd['__ws'].getNumberHistograms()):
-        mtd['__ws'].setX(idx, w)
-    SetGoniometer('__ws', Axis0="HB2C:Mot:s1,0,1,0,1")
-    return mtd['__ws']
+    for idx in range(mtd[OutputWorkspace].getNumberHistograms()):
+        mtd[OutputWorkspace].setX(idx, w)
+    SetGoniometer(OutputWorkspace, Axis0="HB2C:Mot:s1,0,1,0,1")
+    return OutputWorkspace
 
 
 def reduceToPowder(ws, OutputWorkspace, norm=None, taget='Theta', XMin=10, XMax=135, NumberBins=2500):
@@ -29,28 +29,29 @@ def reduceToPowder(ws, OutputWorkspace, norm=None, taget='Theta', XMin=10, XMax=
         ResampleX(InputWorkspace='__norm', OutputWorkspace='__norm', XMin=XMin, XMax=XMax, NumberBins=NumberBins)
         Divide(LHSWorkspace=OutputWorkspace,RHSWorkspace='__norm',OutputWorkspace=OutputWorkspace)
         DeleteWorkspace('__norm')
-    return mtd[OutputWorkspace]
+    return OutputWorkspace
 
 
-def convertToQSample(ws):
+def convertToQSample(ws, OutputWorkspace='__md_q_sample'):
     """Output MDEventWorkspace in Q Sample
     """
-    return ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample')
+    ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample',MinValues='-10,-1,-10',MaxValues='10,1,10',OutputWorkspace=OutputWorkspace)
+    return OutputWorkspace
 
 
-def convertToHKL(ws, norm=None, UB=None):
-    """Output MDEventWorkspace in Q Sample
+def convertToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None):
+    """Output MDEventWorkspace in HKL
     """
     SetUB(ws, UB=UB)
-    if norm is None:
-        return ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL')
-    else:
+    ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL',dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace=OutputWorkspace)
+    if norm is not None:
         SetUB(norm, UB=UB)
-        return (ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL'),
-                ConvertToMD(norm, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='HKL'))
+        ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace=OutputWorkspace)
+        ConvertToMD(norm, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace=str(OutputWorkspace)+'_norm')
+    return OutputWorkspace
 
 
-def convertQSampleToHKL(ws, norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101]):
+def convertQSampleToHKL(ws, OutputWorkspace='__md_hkl',norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101]):
     ol = OrientedLattice()
     ol.setUB(UB)
     q1 = ol.qFromHKL([1, 0, 0])
@@ -64,8 +65,12 @@ def convertQSampleToHKL(ws, norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 
                  OutputExtents=Extents, OutputBins=Bins)
 
 
-def accumlateMD(accum, ws):
+def accumulateMD(ws, norm=None, OutputWorkspace='__mdh_sum'):
     if accum in mtd:
-        return PlusMD(LHSWorkspace=accum, RHSWorkspace=ws)
+        PlusMD(LHSWorkspace=OutputWorkspace, RHSWorkspace=ws, OutputWorkspace=OutputWorkspace)
+        if norm is not None:
+            PlusMD(LHSWorkspace=str(OutputWorkspace)+'_norm', RHSWorkspace=norm, OutputWorkspace=str(OutputWorkspace)+'_norm')
     else:
-        return CloneMDWorkspace(InputWorkspace=ws)
+        CloneMDWorkspace(InputWorkspace=ws, OutputWorkspace=OutputWorkspace)
+        if norm is not None:
+            CloneMDWorkspace(InputWorkspace=norm, OutputWorkspace=str(OutputWorkspace)+'_norm')
