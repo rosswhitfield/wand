@@ -73,7 +73,7 @@ def convertQSampleToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Exte
           OutputWorkspace=OutputWorkspace)
     if norm is not None:
         mtd[str(norm)].run().getGoniometer().setR(mtd[str(ws)].getExperimentInfo(0).run().getGoniometer().getR())
-        convertToHKL(norm, OutputWorkspace=str(OutputWorkspace)+'_norm', UB=UB)
+        convertToHKL(norm, OutputWorkspace=str(OutputWorkspace)+'_norm', UB=UB, Extents=Extents, Bins=Bins)
     return OutputWorkspace
 
 
