@@ -18,9 +18,9 @@ OptimizeLatticeForCellType('peaks', CellType='Orthorhombic',Apply=True)
 #SaveIsawUB('peaks',Filename='/SNS/users/rwp/PNO.mat')
 
 
-
-LoadIsawUB('van','/SNS/users/rwp/wand/single5/PNO_T.mat')
-ub=mtd['van'].sample().getOrientedLattice().getUB().copy()
+CreateSingleValuedWorkspace(OutputWorkspace='ub')
+LoadIsawUB('ub','/SNS/users/rwp/wand/single5/PNO_T.mat')
+ub=mtd['ub'].sample().getOrientedLattice().getUB().copy()
 
 ol = OrientedLattice()
 ol.setUB(ub)
@@ -28,3 +28,8 @@ q1 = ol.qFromHKL([1, 0, 0])
 q2 = ol.qFromHKL([0, 1, 0])
 q3 = ol.qFromHKL([0, 0, 1])
 
+BinMD(InputWorkspace='dataE',OutputWorkspace='mdh', AxisAligned=False, NormalizeBasisVectors=False,
+          BasisVector0='[H,0,0],A^-1,{},{},{}'.format(q1.X(), q1.Y(), q1.Z()),
+          BasisVector1='[0,K,0],A^-1,{},{},{}'.format(q2.X(), q2.Y(), q2.Z()),
+          BasisVector2='[0,0,L],A^-1,{},{},{}'.format(q3.X(), q3.Y(), q3.Z()),
+          OutputExtents='-8,8,-8,8,-2.5,2.5', OutputBins='401,401,126')
