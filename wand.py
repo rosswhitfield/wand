@@ -1,7 +1,9 @@
-from mantid.simpleapi import (LoadEventNexus, Integration, MaskDetectors, mtd,
-                              SetGoniometer, ConvertSpectrumAxis, Transpose,
-                              ResampleX, ConvertToMD, SetUB, BinMD, SliceMD,
-                              PlusMD, CloneMDWorkspace, Divide, DeleteWorkspace)
+from mantid.simpleapi import (LoadEventNexus, Integration,
+                              MaskDetectors, mtd, SetGoniometer,
+                              ConvertSpectrumAxis, Transpose,
+                              ResampleX, ConvertToMD, SetUB, BinMD,
+                              PlusMD, CloneMDWorkspace, Divide,
+                              DeleteWorkspace)
 from mantid.geometry import OrientedLattice
 import numpy as np
 
@@ -27,7 +29,7 @@ def reduceToPowder(ws, OutputWorkspace, norm=None, taget='Theta', XMin=10, XMax=
         ConvertSpectrumAxis(InputWorkspace=norm, Target=taget, OutputWorkspace='__norm')
         Transpose(InputWorkspace='__norm', OutputWorkspace='__norm')
         ResampleX(InputWorkspace='__norm', OutputWorkspace='__norm', XMin=XMin, XMax=XMax, NumberBins=NumberBins)
-        Divide(LHSWorkspace=OutputWorkspace,RHSWorkspace='__norm',OutputWorkspace=OutputWorkspace)
+        Divide(LHSWorkspace=OutputWorkspace, RHSWorkspace='__norm', OutputWorkspace=OutputWorkspace)
         DeleteWorkspace('__norm')
     return OutputWorkspace
 
@@ -35,42 +37,53 @@ def reduceToPowder(ws, OutputWorkspace, norm=None, taget='Theta', XMin=10, XMax=
 def convertToQSample(ws, OutputWorkspace='__md_q_sample'):
     """Output MDEventWorkspace in Q Sample
     """
-    ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample',MinValues='-10,-1,-10',MaxValues='10,1,10',OutputWorkspace=OutputWorkspace)
+    ConvertToMD(ws, QDimensions='Q3D', dEAnalysisMode='Elastic', Q3DFrames='Q_sample',
+                MinValues='-10,-1,-10', MaxValues='10,1,10', OutputWorkspace=OutputWorkspace)
     return OutputWorkspace
 
 
-def convertToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None):
+def convertToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101]):
     """Output MDEventWorkspace in HKL
     """
     SetUB(ws, UB=UB)
-    ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL',dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace=OutputWorkspace)
+    ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace=OutputWorkspace)
+    BinMD(InputWorkspace=OutputWorkspace,
+          OutputExtents=Extents, OutputBins=Bins,
+          OutputWorkspace=OutputWorkspace)
     if norm is not None:
         SetUB(norm, UB=UB)
-        ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace=OutputWorkspace)
         ConvertToMD(norm, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace=str(OutputWorkspace)+'_norm')
+        BinMD(InputWorkspace=str(OutputWorkspace)+'_norm',
+              OutputExtents=Extents, OutputBins=Bins,
+              OutputWorkspace=str(OutputWorkspace)+'_norm')
     return OutputWorkspace
 
 
-def convertQSampleToHKL(ws, OutputWorkspace='__md_hkl',norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101]):
+def convertQSampleToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101]):
     ol = OrientedLattice()
     ol.setUB(UB)
     q1 = ol.qFromHKL([1, 0, 0])
     q2 = ol.qFromHKL([0, 1, 0])
     q3 = ol.qFromHKL([0, 0, 1])
-    # mtd['__bkg'].run().getGoniometer().setR(mtd['__run'].run().getGoniometer().getR())
-    return BinMD(InputWorkspace=ws, AxisAligned=False,
-                 BasisVector0='[H,0,0],A^-1,{},{},{}'.format(q1.X(), q1.Y(), q1.Z()),
-                 BasisVector1='[0,K,0],A^-1,{},{},{}'.format(q2.X(), q2.Y(), q2.Z()),
-                 BasisVector2='[0,0,L],A^-1,{},{},{}'.format(q3.X(), q3.Y(), q3.Z()),
-                 OutputExtents=Extents, OutputBins=Bins)
+    BinMD(InputWorkspace=ws, AxisAligned=False,
+          BasisVector0='[H,0,0],A^-1,{},{},{}'.format(q1.X(), q1.Y(), q1.Z()),
+          BasisVector1='[0,K,0],A^-1,{},{},{}'.format(q2.X(), q2.Y(), q2.Z()),
+          BasisVector2='[0,0,L],A^-1,{},{},{}'.format(q3.X(), q3.Y(), q3.Z()),
+          OutputExtents=Extents, OutputBins=Bins,
+          OutputWorkspace=OutputWorkspace)
+    if norm is not None:
+        mtd[str(norm)].run().getGoniometer().setR(mtd[str(ws)].getExperimentInfo(0).run().getGoniometer().getR())
+        convertToHKL(norm, OutputWorkspace=str(OutputWorkspace)+'_norm', UB=UB)
+    return OutputWorkspace
 
 
 def accumulateMD(ws, norm=None, OutputWorkspace='__mdh_sum'):
-    if accum in mtd:
+    if OutputWorkspace in mtd:
         PlusMD(LHSWorkspace=OutputWorkspace, RHSWorkspace=ws, OutputWorkspace=OutputWorkspace)
         if norm is not None:
             PlusMD(LHSWorkspace=str(OutputWorkspace)+'_norm', RHSWorkspace=norm, OutputWorkspace=str(OutputWorkspace)+'_norm')
     else:
         CloneMDWorkspace(InputWorkspace=ws, OutputWorkspace=OutputWorkspace)
         if norm is not None:
-            CloneMDWorkspace(InputWorkspace=norm, OutputWorkspace=str(OutputWorkspace)+'_norm')
+            CloneMDWorkspace(InputWorkspace=str(OutputWorkspace)+'_norm', OutputWorkspace=str(OutputWorkspace)+'_norm')
+    return OutputWorkspace
