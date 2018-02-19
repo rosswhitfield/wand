@@ -13,14 +13,11 @@ for run in range(4756,6557,5):
 FindPeaksMD(InputWorkspace='dataE', PeakDistanceThreshold=0.2, DensityThresholdFactor=500, CalculateGoniometerForCW=True, Wavelength=1.488, OutputWorkspace='peaks')
 FindUBUsingFFT('peaks',MinD=3,MaxD=15)
 ShowPossibleCells('peaks')
-SelectCellWithForm('peaks',FormNumber=42,Apply=True)
+SelectCellWithForm('peaks',FormNumber=13,Apply=True)
 OptimizeLatticeForCellType('peaks', CellType='Orthorhombic',Apply=True)
-#SaveIsawUB('peaks',Filename='/SNS/users/rwp/PNO.mat')
+ub=mtd['peaks'].sample().getOrientedLattice().getUB().copy()
 
 
-CreateSingleValuedWorkspace(OutputWorkspace='ub')
-LoadIsawUB('ub','/SNS/users/rwp/wand/single5/PNO_T.mat')
-ub=mtd['ub'].sample().getOrientedLattice().getUB().copy()
 
 ol = OrientedLattice()
 ol.setUB(ub)
