@@ -3,7 +3,7 @@ from mantid.simpleapi import *
 if 'dataE' in mtd:
     mtd.remove('dataE')
     
-for run in range(4756,6557,10):
+for run in range(4756,6557,5):
     LoadMD(Filename='/HFIR/HB2C/IPTS-7776/shared/rwp/PNOe/HB2C_{}_MDE.nxs'.format(run),OutputWorkspace='md')
     if 'dataE' in mtd:
         PlusMD(LHSWorkspace='dataE', RHSWorkspace='md', OutputWorkspace='dataE')
