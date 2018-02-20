@@ -1,5 +1,5 @@
 from wand import convertToQSample, convertQSampleToHKL, accumulateMD
-from mantid.simpleapi import LoadNexus, LoadMD, DeleteWorkspace
+from mantid.simpleapi import LoadNexus, LoadMD, DeleteWorkspace, DivideMD
 import numpy as np
 
 van = LoadNexus('/HFIR/HB2C/IPTS-7776/shared/autoreduce/HB2C_{}.nxs'.format(6558))
@@ -23,8 +23,11 @@ convertQSampleToHKL('data','hkl',UB=ub,Bins=[401,401,401])
 
 if 'out' in mtd:
     DeleteWorkspace('out')
+    DeleteWorkspace('out_norm')
 
-for filename in ['/HFIR/HB2C/IPTS-7776/shared/rwp/PNOe/HB2C_{}_MDE.nxs'.format(run) for run in range(4756,6557,100)]:
+for filename in ['/HFIR/HB2C/IPTS-7776/shared/rwp/PNOe/HB2C_{}_MDE.nxs'.format(run) for run in range(4756,6557,1)]:
     LoadMD(Filename=filename, LoadHistory=False, OutputWorkspace='md')
     convertQSampleToHKL('md', norm=van,UB=ub,Extents=[-10.025,10.025,-10.025,10.025,-2.025,2.025],Bins=[401,401,81],OutputWorkspace='mdh')
     accumulateMD('mdh', 'mdh_norm', OutputWorkspace='out')
+
+norm_data=DivideMD('out','out_norm')

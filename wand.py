@@ -72,7 +72,7 @@ def convertQSampleToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Exte
     q1 = ol.qFromHKL([1, 0, 0])
     q2 = ol.qFromHKL([0, 1, 0])
     q3 = ol.qFromHKL([0, 0, 1])
-    BinMD(InputWorkspace=ws, AxisAligned=False,
+    BinMD(InputWorkspace=ws, AxisAligned=False,NormalizeBasisVectors=False,
           BasisVector0='[H,0,0],A^-1,{},{},{}'.format(q1.X(), q1.Y(), q1.Z()),
           BasisVector1='[0,K,0],A^-1,{},{},{}'.format(q2.X(), q2.Y(), q2.Z()),
           BasisVector2='[0,0,L],A^-1,{},{},{}'.format(q3.X(), q3.Y(), q3.Z()),
