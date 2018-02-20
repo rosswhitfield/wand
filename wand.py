@@ -42,31 +42,38 @@ def convertToQSample(ws, OutputWorkspace='__md_q_sample'):
     return OutputWorkspace
 
 
-def convertToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101]):
+def convertToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101], Append=False):
     """Output MDEventWorkspace in HKL
     """
+
     SetUB(ws, UB=UB)
-    ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace=OutputWorkspace)
-    AlignedDim0="{},{},{},{}".format(mtd[OutputWorkspace].getDimension(0).name, Extents[0], Extents[1], int(Bins[0]))
-    AlignedDim1="{},{},{},{}".format(mtd[OutputWorkspace].getDimension(1).name, Extents[2], Extents[3], int(Bins[1]))
-    AlignedDim2="{},{},{},{}".format(mtd[OutputWorkspace].getDimension(2).name, Extents[4], Extents[5], int(Bins[2]))
-    BinMD(InputWorkspace=OutputWorkspace,
+    ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='__temp')
+
+    AlignedDim0="{},{},{},{}".format(mtd['__temp'].getDimension(0).name, Extents[0], Extents[1], int(Bins[0]))
+    AlignedDim1="{},{},{},{}".format(mtd['__temp'].getDimension(1).name, Extents[2], Extents[3], int(Bins[1]))
+    AlignedDim2="{},{},{},{}".format(mtd['__temp'].getDimension(2).name, Extents[4], Extents[5], int(Bins[2]))
+
+    BinMD(InputWorkspace='__temp',
+          TemporaryDataWorkspace=OutputWorkspace if Append and mtd.doesExist(OutputWorkspace) else None,
           OutputWorkspace=OutputWorkspace,
           AlignedDim0=AlignedDim0,
           AlignedDim1=AlignedDim1,
           AlignedDim2=AlignedDim2)
+    DeleteWorkspace('__temp')
     if norm is not None:
         SetUB(norm, UB=UB)
-        ConvertToMD(norm, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace=str(OutputWorkspace)+'_norm')
-        BinMD(InputWorkspace=str(OutputWorkspace)+'_norm',
+        ConvertToMD(norm, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='__temp_norm')
+        BinMD(InputWorkspace='__temp_norm',
+              TemporaryDataWorkspace=str(OutputWorkspace)+'_norm' if Append and mtd.doesExist(str(OutputWorkspace)+'_norm') else None,
               OutputWorkspace=str(OutputWorkspace)+'_norm',
               AlignedDim0=AlignedDim0,
               AlignedDim1=AlignedDim1,
               AlignedDim2=AlignedDim2)
+        DeleteWorkspace('__temp_norm')
     return OutputWorkspace
 
 
-def convertQSampleToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101]):
+def convertQSampleToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101], Append=False):
     ol = OrientedLattice()
     ol.setUB(UB)
     q1 = ol.qFromHKL([1, 0, 0])
@@ -77,10 +84,11 @@ def convertQSampleToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Exte
           BasisVector1='[0,K,0],A^-1,{},{},{}'.format(q2.X(), q2.Y(), q2.Z()),
           BasisVector2='[0,0,L],A^-1,{},{},{}'.format(q3.X(), q3.Y(), q3.Z()),
           OutputExtents=Extents, OutputBins=Bins,
+          TemporaryDataWorkspace=OutputWorkspace if Append and mtd.doesExist(OutputWorkspace) else None,
           OutputWorkspace=OutputWorkspace)
     if norm is not None:
         mtd[str(norm)].run().getGoniometer().setR(mtd[str(ws)].getExperimentInfo(0).run().getGoniometer().getR())
-        convertToHKL(norm, OutputWorkspace=str(OutputWorkspace)+'_norm', UB=UB, Extents=Extents, Bins=Bins)
+        convertToHKL(norm, OutputWorkspace=str(OutputWorkspace)+'_norm', UB=UB, Extents=Extents, Bins=Bins, Append=Append)
     return OutputWorkspace
 
 
