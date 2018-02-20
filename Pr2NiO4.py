@@ -21,7 +21,10 @@ ub=np.array([[ 0.01102186,0.18410204,0.00357398], [ 0.00136234,-0.00071337,0.076
 
 convertQSampleToHKL('data','hkl',UB=ub,Bins=[401,401,401])
 
+if 'out' in mtd:
+    DeleteWorkspace('out')
+
 for filename in ['/HFIR/HB2C/IPTS-7776/shared/rwp/PNOe/HB2C_{}_MDE.nxs'.format(run) for run in range(4756,6557,100)]:
     LoadMD(Filename=filename, LoadHistory=False, OutputWorkspace='md')
-    convertQSampleToHKL('md', norm=van,UB=ub,Bins=[401,401,401],OutputWorkspace='mdh')
+    convertQSampleToHKL('md', norm=van,UB=ub,Extents=[-10.025,10.025,-10.025,10.025,-2.025,2.025],Bins=[401,401,81],OutputWorkspace='mdh')
     accumulateMD('mdh', 'mdh_norm', OutputWorkspace='out')

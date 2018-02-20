@@ -47,15 +47,22 @@ def convertToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Extents=[-1
     """
     SetUB(ws, UB=UB)
     ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace=OutputWorkspace)
+    AlignedDim0="{},{},{},{}".format(mtd[OutputWorkspace].getDimension(0).name, Extents[0], Extents[1], int(Bins[0]))
+    AlignedDim1="{},{},{},{}".format(mtd[OutputWorkspace].getDimension(1).name, Extents[2], Extents[3], int(Bins[1]))
+    AlignedDim2="{},{},{},{}".format(mtd[OutputWorkspace].getDimension(2).name, Extents[4], Extents[5], int(Bins[2]))
     BinMD(InputWorkspace=OutputWorkspace,
-          OutputExtents=Extents, OutputBins=Bins,
-          OutputWorkspace=OutputWorkspace)
+          OutputWorkspace=OutputWorkspace,
+          AlignedDim0=AlignedDim0,
+          AlignedDim1=AlignedDim1,
+          AlignedDim2=AlignedDim2)
     if norm is not None:
         SetUB(norm, UB=UB)
         ConvertToMD(norm, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace=str(OutputWorkspace)+'_norm')
         BinMD(InputWorkspace=str(OutputWorkspace)+'_norm',
-              OutputExtents=Extents, OutputBins=Bins,
-              OutputWorkspace=str(OutputWorkspace)+'_norm')
+              OutputWorkspace=str(OutputWorkspace)+'_norm',
+              AlignedDim0=AlignedDim0,
+              AlignedDim1=AlignedDim1,
+              AlignedDim2=AlignedDim2)
     return OutputWorkspace
 
 
@@ -85,5 +92,5 @@ def accumulateMD(ws, norm=None, OutputWorkspace='__mdh_sum'):
     else:
         CloneMDWorkspace(InputWorkspace=ws, OutputWorkspace=OutputWorkspace)
         if norm is not None:
-            CloneMDWorkspace(InputWorkspace=str(OutputWorkspace)+'_norm', OutputWorkspace=str(OutputWorkspace)+'_norm')
+            CloneMDWorkspace(InputWorkspace=norm, OutputWorkspace=str(OutputWorkspace)+'_norm')
     return OutputWorkspace
