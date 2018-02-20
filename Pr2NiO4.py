@@ -10,7 +10,7 @@ if 'data' in mtd:
 for filename in ['/HFIR/HB2C/IPTS-7776/shared/rwp/PNOe/HB2C_{}_MDE.nxs'.format(run) for run in range(4756,6557,4)]:
                  LoadMD(Filename=filename, LoadHistory=False, OutputWorkspace='md')
                  accumulateMD('md', OutputWorkspace='data')
-
+                 
 SaveMD('data', '/HFIR/HB2C/IPTS-7776/shared/rwp/PNO_data_MDE_4.nxs')
 
 FindPeaksMD(InputWorkspace='data', PeakDistanceThreshold=0.2, DensityThresholdFactor=1000, CalculateGoniometerForCW=True, Wavelength=1.488, OutputWorkspace='peaks')
