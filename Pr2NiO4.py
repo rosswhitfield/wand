@@ -16,14 +16,14 @@ SaveMD('data', '/HFIR/HB2C/IPTS-7776/shared/rwp/PNO_data_MDE_4.nxs')
 FindPeaksMD(InputWorkspace='data', PeakDistanceThreshold=0.2, DensityThresholdFactor=1000, CalculateGoniometerForCW=True, Wavelength=1.488, OutputWorkspace='peaks')
 
 FindUBUsingLatticeParameters('peaks',5.49,5.49,12.17,90,90,90)
+SaveIsawUB('peaks','/HFIR/HB2C/IPTS-7776/shared/rwp/PNO_data_MDE_4.mat')
+
 ub=mtd['peaks'].sample().getOrientedLattice().getUB().copy()
 print(ub)
 
-SaveIsawUB('peaks','/HFIR/HB2C/IPTS-7776/shared/rwp/PNO_data_MDE_4.mat')
-
 #ub=np.array([[ 0.01102186,0.18410204,0.00357398], [ 0.00136234,-0.00071337,0.07663238], [ 0.18420761,-0.01252616,-0.00416132]])
 
-convertQSampleToHKL('data','hkl',UB=ub,Extents=[-10.025,10.025,-10.025,10.025,-2.025,2.025],Bins=[401,401,81])
+convertQSampleToHKL('data','data_hkl',UB=ub,Extents=[-10.025,10.025,-10.025,10.025,-2.025,2.025],Bins=[401,401,81])
 
 
 if 'hkl' in mtd:
