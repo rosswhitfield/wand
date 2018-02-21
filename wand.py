@@ -22,17 +22,20 @@ def loadIntegrateData(filename, OutputWorkspace='__ws', wavelength=1.488):
     return OutputWorkspace
 
 
-def reduceToPowder(ws, OutputWorkspace, norm=None, taget='Theta', XMin=10, XMax=135, NumberBins=2500):
-    # Add scale by monitor
-    ConvertSpectrumAxis(InputWorkspace=ws, Target=taget, OutputWorkspace=OutputWorkspace)
+def reduceToPowder(ws, OutputWorkspace, norm=None, target='Theta', XMin=10, XMax=135, NumberBins=2500, NormaliseByMonitor=True):
+    ConvertSpectrumAxis(InputWorkspace=ws, Target=target, OutputWorkspace=OutputWorkspace)
     Transpose(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace)
     ResampleX(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace, XMin=XMin, XMax=XMax, NumberBins=NumberBins)
+
     if norm is not None:
         ConvertSpectrumAxis(InputWorkspace=norm, Target=taget, OutputWorkspace='__norm')
         Transpose(InputWorkspace='__norm', OutputWorkspace='__norm')
         ResampleX(InputWorkspace='__norm', OutputWorkspace='__norm', XMin=XMin, XMax=XMax, NumberBins=NumberBins)
         Divide(LHSWorkspace=OutputWorkspace, RHSWorkspace='__norm', OutputWorkspace=OutputWorkspace)
         DeleteWorkspace('__norm')
+
+    if NormaliseByMonitor:
+        NormaliseByCurrent(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace)
     return OutputWorkspace
 
 
@@ -45,7 +48,7 @@ def convertToQSample(ws, OutputWorkspace='__md_q_sample'):
 
 
 def convertToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101], Append=False):
-    """Output MDEventWorkspace in HKL
+    """Output MDHistoWorkspace in HKL
     """
 
     SetUB(ws, UB=UB)
