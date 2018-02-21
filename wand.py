@@ -28,6 +28,7 @@ def reduceToPowder(ws, OutputWorkspace, norm=None, target='Theta', XMin=10, XMax
     ResampleX(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace, XMin=XMin, XMax=XMax, NumberBins=NumberBins)
 
     if norm is not None:
+        CopyInstrumentParameters(ws, norm)
         ConvertSpectrumAxis(InputWorkspace=norm, Target=taget, OutputWorkspace='__norm')
         Transpose(InputWorkspace='__norm', OutputWorkspace='__norm')
         ResampleX(InputWorkspace='__norm', OutputWorkspace='__norm', XMin=XMin, XMax=XMax, NumberBins=NumberBins)
@@ -36,6 +37,7 @@ def reduceToPowder(ws, OutputWorkspace, norm=None, target='Theta', XMin=10, XMax
 
     if NormaliseByMonitor:
         NormaliseByCurrent(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace)
+
     return OutputWorkspace
 
 
