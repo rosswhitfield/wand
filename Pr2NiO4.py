@@ -18,6 +18,11 @@ FindPeaksMD(InputWorkspace='data', PeakDistanceThreshold=0.2, DensityThresholdFa
 FindUBUsingLatticeParameters('peaks',5.49,5.49,12.17,90,90,90)
 SaveIsawUB('peaks','/HFIR/HB2C/IPTS-7776/shared/rwp/PNO_data_MDE_4.mat')
 
+#CreateSingleValuedWorkspace(OutputWorkspace='ub')
+#LoadIsawUB('ub','/HFIR/HB2C/IPTS-7776/shared/rwp/PNO_data_MDE_4.mat')
+#ub=mtd['ub'].sample().getOrientedLattice().getUB().copy()
+
+
 ub=mtd['peaks'].sample().getOrientedLattice().getUB().copy()
 print(ub)
 
@@ -32,10 +37,10 @@ if 'hkl' in mtd:
 
 for filename in ['/HFIR/HB2C/IPTS-7776/shared/rwp/PNOe/HB2C_{}_MDE.nxs'.format(run) for run in range(4756,6557,1)]:
     LoadMD(Filename=filename, LoadHistory=False, OutputWorkspace='md')
-    convertQSampleToHKL('md', norm=van,UB=ub,Extents=[-10.025,10.025,-10.025,10.025,-2.025,2.025],Bins=[401,401,81],OutputWorkspace='hkl',Append=True)
+    convertQSampleToHKL('md', norm=van,UB=ub,Extents=[-7.01,7.01,-7.01,7.01,-2.01,2.01],Bins=[701,701,201],OutputWorkspace='hkl',Append=True)
 
-SaveMD('hkl', '/HFIR/HB2C/IPTS-7776/shared/rwp/PNO_data_MDH.nxs')
-SaveMD('hkl_norm', '/HFIR/HB2C/IPTS-7776/shared/rwp/PNO_norm_MDH.nxs')
+SaveMD('hkl', '/HFIR/HB2C/IPTS-7776/shared/rwp/PNO_data_MDH_0.2.nxs')
+SaveMD('hkl_norm', '/HFIR/HB2C/IPTS-7776/shared/rwp/PNO_norm_MDH_0.2.nxs')
 
 
 norm_data=DivideMD('hkl','hkl_norm')
