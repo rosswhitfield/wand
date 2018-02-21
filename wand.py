@@ -9,7 +9,7 @@ import numpy as np
 
 
 def loadIntegrateData(filename, OutputWorkspace='__ws', wavelength=1.488):
-    LoadEventNexus(Filename=filename, OutputWorkspace=OutputWorkspace)
+    LoadEventNexus(Filename=filename, OutputWorkspace=OutputWorkspace, LoadMonitors=True)
     Integration(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace)
     MaskDetectors(OutputWorkspace, DetectorList=range(16384))
     mtd[OutputWorkspace].getAxis(0).setUnit("Wavelength")
@@ -17,6 +17,8 @@ def loadIntegrateData(filename, OutputWorkspace='__ws', wavelength=1.488):
     for idx in range(mtd[OutputWorkspace].getNumberHistograms()):
         mtd[OutputWorkspace].setX(idx, w)
     SetGoniometer(OutputWorkspace, Axis0="HB2C:Mot:s1,0,1,0,1")
+    AddSampleLog(OutputWorkspace,LogName="gd_prtn_chrg",LogType='Number',NumberType='Double',
+                 LogText=str(mtd[OutputWorkspace+'_monitors'].getNumberEvents()))
     return OutputWorkspace
 
 

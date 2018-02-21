@@ -34,4 +34,35 @@ for filename in ['/HFIR/HB2C/IPTS-7776/shared/rwp/PNOe/HB2C_{}_MDE.nxs'.format(r
     LoadMD(Filename=filename, LoadHistory=False, OutputWorkspace='md')
     convertQSampleToHKL('md', norm=van,UB=ub,Extents=[-10.025,10.025,-10.025,10.025,-2.025,2.025],Bins=[401,401,81],OutputWorkspace='hkl',Append=True)
 
+SaveMD('hkl', '/HFIR/HB2C/IPTS-7776/shared/rwp/PNO_data_MDH.nxs')
+SaveMD('hkl_norm', '/HFIR/HB2C/IPTS-7776/shared/rwp/PNO_norm_MDH.nxs')
+
+
 norm_data=DivideMD('hkl','hkl_norm')
+
+
+
+# Symmerty
+
+CloneMDWorkspace('hkl',OutputWorkspace='hkl_sym')
+CloneMDWorkspace('hkl_norm',OutputWorkspace='hkl_norm_sym')
+
+data_signal = mtd['hkl'].getSignalArray()
+norm_signal = mtd['hkl_norm'].getSignalArray()
+
+data_signal_new = data_signal + data_signal[::-1,::-1,::1] # 180
+norm_signal_new = norm_signal + norm_signal[::-1,::-1,::1] # 180
+
+data_signal_new = data_signal + np.transpose(data_signal,(1,0,2))[::-1,::1,::1] + data_signal[::-1,::-1,::1]  + np.transpose(data_signal,(1,0,2))[::1,::-1,::1] # 90. 180. 270
+norm_signal_new = norm_signal + np.transpose(norm_signal,(1,0,2))[::-1,::1,::1] + norm_signal[::-1,::-1,::1]  + np.transpose(norm_signal,(1,0,2))[::1,::-1,::1] # 90, 180, 270
+
+data_signal_new = data_signal_new + data_signal_new[::-1,::1,::1] # mirror x
+norm_signal_new = norm_signal_new+ norm_signal_new[::-1,::1,::1] # mirror x
+data_signal_new = data_signal_new + data_signal_new[::1,::-1,::1] # mirror y
+norm_signal_new = norm_signal_new+ norm_signal_new[::1,::-1,::1] # mirror y
+
+
+mtd['hkl_sym'].setSignalArray(data_signal_new)
+mtd['hkl_norm_sym'].setSignalArray(norm_signal_new)
+
+norm_data_sym=DivideMD('hkl_sym','hkl_norm_sym')
