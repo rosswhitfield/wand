@@ -49,12 +49,15 @@ def convertToQSample(ws, OutputWorkspace='__md_q_sample'):
     return OutputWorkspace
 
 
-def convertToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101], Append=False):
+def convertToHKL(ws, OutputWorkspace='__md_hkl', UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101], Append=False, Scale=None):
     """Output MDHistoWorkspace in HKL
     """
 
     SetUB(ws, UB=UB)
     ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='__temp')
+
+    if scale is not None:
+        
 
     AlignedDim0 = "{},{},{},{}".format(mtd['__temp'].getDimension(0).name, Extents[0], Extents[1], int(Bins[0]))
     AlignedDim1 = "{},{},{},{}".format(mtd['__temp'].getDimension(1).name, Extents[2], Extents[3], int(Bins[1]))
@@ -67,16 +70,7 @@ def convertToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Extents=[-1
           AlignedDim1=AlignedDim1,
           AlignedDim2=AlignedDim2)
     DeleteWorkspace('__temp')
-    if norm is not None:
-        SetUB(norm, UB=UB)
-        ConvertToMD(norm, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='__temp_norm')
-        BinMD(InputWorkspace='__temp_norm',
-              TemporaryDataWorkspace=str(OutputWorkspace)+'_norm' if Append and mtd.doesExist(str(OutputWorkspace)+'_norm') else None,
-              OutputWorkspace=str(OutputWorkspace)+'_norm',
-              AlignedDim0=AlignedDim0,
-              AlignedDim1=AlignedDim1,
-              AlignedDim2=AlignedDim2)
-        DeleteWorkspace('__temp_norm')
+
     return OutputWorkspace
 
 
