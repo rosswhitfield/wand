@@ -3,7 +3,9 @@ from mantid.simpleapi import (LoadEventNexus, Integration,
                               ConvertSpectrumAxis, Transpose,
                               ResampleX, ConvertToMD, SetUB, BinMD,
                               PlusMD, CloneMDWorkspace, Divide,
-                              DeleteWorkspace, AddSampleLog)
+                              DeleteWorkspace, AddSampleLog,
+                              CopyInstrumentParameters,
+                              NormaliseByCurrent)
 from mantid.geometry import OrientedLattice
 import numpy as np
 
@@ -29,7 +31,7 @@ def reduceToPowder(ws, OutputWorkspace, norm=None, target='Theta', XMin=10, XMax
 
     if norm is not None:
         CopyInstrumentParameters(ws, norm)
-        ConvertSpectrumAxis(InputWorkspace=norm, Target=taget, OutputWorkspace='__norm')
+        ConvertSpectrumAxis(InputWorkspace=norm, Target=target, OutputWorkspace='__norm')
         Transpose(InputWorkspace='__norm', OutputWorkspace='__norm')
         ResampleX(InputWorkspace='__norm', OutputWorkspace='__norm', XMin=XMin, XMax=XMax, NumberBins=NumberBins)
         Divide(LHSWorkspace=OutputWorkspace, RHSWorkspace='__norm', OutputWorkspace=OutputWorkspace)
@@ -56,8 +58,8 @@ def convertToHKL(ws, OutputWorkspace='__md_hkl', UB=None, Extents=[-10, 10, -10,
     SetUB(ws, UB=UB)
     ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='__temp')
 
-    if scale is not None:
-        
+    if Scale is not None:
+        mtd['__temp'] = mtd['__temp']/Scale
 
     AlignedDim0 = "{},{},{},{}".format(mtd['__temp'].getDimension(0).name, Extents[0], Extents[1], int(Bins[0]))
     AlignedDim1 = "{},{},{},{}".format(mtd['__temp'].getDimension(1).name, Extents[2], Extents[3], int(Bins[1]))
@@ -89,7 +91,7 @@ def convertQSampleToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Exte
           OutputWorkspace=OutputWorkspace)
     if norm is not None:
         mtd[str(norm)].run().getGoniometer().setR(mtd[str(ws)].getExperimentInfo(0).run().getGoniometer().getR())
-        convertToHKL(norm, OutputWorkspace=str(OutputWorkspace)+'_norm', UB=UB, Extents=Extents, Bins=Bins, Append=Append)
+        convertToHKL(norm, OutputWorkspace=str(OutputWorkspace)+'_norm', UB=UB, Extents=Extents, Bins=Bins, Append=Append, Scale=mtd[ws].getExperimentInfo(0).run().getProtonCharge())
     return OutputWorkspace
 
 
