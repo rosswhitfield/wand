@@ -58,7 +58,7 @@ def convertToHKL(ws, OutputWorkspace='__md_hkl', UB=None, Extents=[-10, 10, -10,
 
     SetUB(ws, UB=UB)
     ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='__temp',
-                Uproj=(1,0,0), Vproj=(0,1,0), Wproj=(0,0,1))
+                Uproj=Uproj, Vproj=Vproj, Wproj=Wproj)
 
     if Scale is not None:
         mtd['__temp'] = mtd['__temp']/Scale
