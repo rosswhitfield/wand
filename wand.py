@@ -51,12 +51,14 @@ def convertToQSample(ws, OutputWorkspace='__md_q_sample'):
     return OutputWorkspace
 
 
-def convertToHKL(ws, OutputWorkspace='__md_hkl', UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101], Append=False, Scale=None):
+def convertToHKL(ws, OutputWorkspace='__md_hkl', UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101], Append=False, Scale=None,
+                 Uproj=(1,0,0), Vproj=(0,1,0), Wproj=(0,0,1)):
     """Output MDHistoWorkspace in HKL
     """
 
     SetUB(ws, UB=UB)
-    ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='__temp')
+    ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='__temp',
+                Uproj=(1,0,0), Vproj=(0,1,0), Wproj=(0,0,1))
 
     if Scale is not None:
         mtd['__temp'] = mtd['__temp']/Scale
@@ -76,22 +78,24 @@ def convertToHKL(ws, OutputWorkspace='__md_hkl', UB=None, Extents=[-10, 10, -10,
     return OutputWorkspace
 
 
-def convertQSampleToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101], Append=False):
+def convertQSampleToHKL(ws, OutputWorkspace='__md_hkl', norm=None, UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101], Append=False,
+                        Uproj=(1,0,0), Vproj=(0,1,0), Wproj=(0,0,1)):
     ol = OrientedLattice()
     ol.setUB(UB)
-    q1 = ol.qFromHKL([1, 0, 0])
-    q2 = ol.qFromHKL([0, 1, 0])
-    q3 = ol.qFromHKL([0, 0, 1])
+    q1 = ol.qFromHKL(Uproj)
+    q2 = ol.qFromHKL(Vproj)
+    q3 = ol.qFromHKL(Wproj)
     BinMD(InputWorkspace=ws, AxisAligned=False, NormalizeBasisVectors=False,
-          BasisVector0='[H,0,0],A^-1,{},{},{}'.format(q1.X(), q1.Y(), q1.Z()),
-          BasisVector1='[0,K,0],A^-1,{},{},{}'.format(q2.X(), q2.Y(), q2.Z()),
-          BasisVector2='[0,0,L],A^-1,{},{},{}'.format(q3.X(), q3.Y(), q3.Z()),
+          BasisVector0='Q1,A^-1,{},{},{}'.format(q1.X(), q1.Y(), q1.Z()),
+          BasisVector1='Q2,A^-1,{},{},{}'.format(q2.X(), q2.Y(), q2.Z()),
+          BasisVector2='Q3,A^-1,{},{},{}'.format(q3.X(), q3.Y(), q3.Z()),
           OutputExtents=Extents, OutputBins=Bins,
           TemporaryDataWorkspace=OutputWorkspace if Append and mtd.doesExist(OutputWorkspace) else None,
           OutputWorkspace=OutputWorkspace)
     if norm is not None:
         mtd[str(norm)].run().getGoniometer().setR(mtd[str(ws)].getExperimentInfo(0).run().getGoniometer().getR())
-        convertToHKL(norm, OutputWorkspace=str(OutputWorkspace)+'_norm', UB=UB, Extents=Extents, Bins=Bins, Append=Append, Scale=mtd[ws].getExperimentInfo(0).run().getProtonCharge())
+        convertToHKL(norm, OutputWorkspace=str(OutputWorkspace)+'_norm', UB=UB, Extents=Extents, Bins=Bins, Append=Append, Scale=mtd[ws].getExperimentInfo(0).run().getProtonCharge(),
+                     Uproj=Uproj, Vproj=Vproj, Wproj=Wproj)
     return OutputWorkspace
 
 
