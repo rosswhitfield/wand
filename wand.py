@@ -1,44 +1,30 @@
-from mantid.simpleapi import (LoadEventNexus, Integration,
-                              MaskDetectors, mtd, SetGoniometer,
-                              ConvertSpectrumAxis, Transpose,
+from mantid.simpleapi import (mtd, ConvertSpectrumAxis, Transpose,
                               ResampleX, ConvertToMD, SetUB, BinMD,
                               PlusMD, CloneMDWorkspace, Divide,
-                              DeleteWorkspace, AddSampleLog,
+                              DeleteWorkspace, Scale,
                               CopyInstrumentParameters,
                               NormaliseByCurrent)
 from mantid.geometry import OrientedLattice
-import numpy as np
 
 
-def loadIntegrateData(filename, OutputWorkspace='__ws', wavelength=1.488):
-    LoadEventNexus(Filename=filename, OutputWorkspace=OutputWorkspace, LoadMonitors=True)
-    Integration(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace)
-    MaskDetectors(OutputWorkspace, DetectorList=range(16384))
-    mtd[OutputWorkspace].getAxis(0).setUnit("Wavelength")
-    w = np.array([wavelength-0.001, wavelength+0.001])
-    for idx in range(mtd[OutputWorkspace].getNumberHistograms()):
-        mtd[OutputWorkspace].setX(idx, w)
-    SetGoniometer(OutputWorkspace, Axis0="HB2C:Mot:s1,0,1,0,1")
-    AddSampleLog(OutputWorkspace, LogName="gd_prtn_chrg", LogType='Number', NumberType='Double',
-                 LogText=str(mtd[OutputWorkspace+'_monitors'].getNumberEvents()))
-    return OutputWorkspace
-
-
-def reduceToPowder(ws, OutputWorkspace, norm=None, target='Theta', XMin=10, XMax=135, NumberBins=2500, NormaliseByMonitor=True):
+def reduceToPowder(ws, OutputWorkspace, cal=None, target='Theta', XMin=10, XMax=135, NumberBins=2500, normaliseBy='Monitor'):
     ConvertSpectrumAxis(InputWorkspace=ws, Target=target, OutputWorkspace=OutputWorkspace)
     Transpose(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace)
     ResampleX(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace, XMin=XMin, XMax=XMax, NumberBins=NumberBins)
 
-    if norm is not None:
-        CopyInstrumentParameters(ws, norm)
-        ConvertSpectrumAxis(InputWorkspace=norm, Target=target, OutputWorkspace='__norm')
-        Transpose(InputWorkspace='__norm', OutputWorkspace='__norm')
-        ResampleX(InputWorkspace='__norm', OutputWorkspace='__norm', XMin=XMin, XMax=XMax, NumberBins=NumberBins)
-        Divide(LHSWorkspace=OutputWorkspace, RHSWorkspace='__norm', OutputWorkspace=OutputWorkspace)
-        DeleteWorkspace('__norm')
+    if cal is not None:
+        CopyInstrumentParameters(ws, cal)
+        ConvertSpectrumAxis(InputWorkspace=cal, Target=target, OutputWorkspace='__cal')
+        Transpose(InputWorkspace='__cal', OutputWorkspace='__cal')
+        ResampleX(InputWorkspace='__cal', OutputWorkspace='__cal', XMin=XMin, XMax=XMax, NumberBins=NumberBins)
+        Divide(LHSWorkspace=OutputWorkspace, RHSWorkspace='__cal', OutputWorkspace=OutputWorkspace)
+        DeleteWorkspace('__cal')
 
-    if NormaliseByMonitor:
+    if normaliseBy == "Monitor":
         NormaliseByCurrent(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace)
+    elif normaliseBy == "Time":
+        duration = mtd[ws].getRun().getLogData('duration').value
+        Scale(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace, Factor=1./duration)
 
     return OutputWorkspace
 
