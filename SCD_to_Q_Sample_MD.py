@@ -28,7 +28,6 @@ BinningDim2 = '-10,10,1000'
 iptsdir = '/HFIR/HB2C/IPTS-{}/'.format(IPTS)
 
 name_MDE = name+'_MDE'
-filename = ''
 
 if not append and name_MDE in mtd:
     DeleteWorkspace(name_MDE)

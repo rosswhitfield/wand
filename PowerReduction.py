@@ -3,13 +3,12 @@ from wand import reduceToPowder
 
 
 name = 'Silicon'
-append = False
 IPTS = 7776
-run = 
-vanadium = None
+run = 7544
+vanadium = 7553 # Run number of `None`
 use_autoreduced = True
 use_autoreduced_van = True
-
+normaliseBy='Monitor' # One on (None, Monitor, Time)
 units = 'Theta' # One of (Theta, ElasticQ, ElasticDSpacing)
 Binning = '10,135,2500' # Min,Max,Number_of_bins
 
@@ -20,16 +19,19 @@ Binning = '10,135,2500' # Min,Max,Number_of_bins
 
 iptsdir = '/HFIR/HB2C/IPTS-{}/'.format(IPTS)
 
-name_MDE = name+'_MDE'
-filename = ''
+xmin, xmax, bins = Binning.split(',')
 
-if not append and name_MDE in mtd:
-        DeleteWorkspace(name_MDE)
-        
+if use_autoreduced:        
+    ws = LoadNexus(Filename=iptsdir+'shared/autoreduce/HB2C_{}.nxs'.format(run))
+else:
+    ws = LoadWAND(Filename=iptsdir+'nexus/HB2C_{}.nxs.h5'.format(run))
 
-# Using all autoreduced
-norm = LoadNexus(Filename='/HFIR/HB2C/IPTS-7776/shared/autoreduce/HB2C_6585.nxs')
-si = LoadNexus(Filename='/HFIR/HB2C/IPTS-7776/shared/autoreduce/HB2C_6578.nxs')
+if vanadium is not None:
+    if use_autoreduced_van:
+        cal = LoadNexus(Filename=iptsdir+'shared/autoreduce/HB2C_{}.nxs'.format(vanadium))
+    else:
+        cal = LoadWAND(Filename=iptsdir+'shared/autoreduce/HB2C_{}.nxs.h5'.format(vanadium))
+else:
+    cal = None
 
-reduceToPowder(si,'si_no_norm')
-reduceToPowder(si, 'si_norm', norm)
+reduceToPowder(ws, OutputWorkspace=name, cal=cal, target=units, XMin=xmin, XMax=xmax, NumberBins=bins, normaliseBy=normaliseBy)
