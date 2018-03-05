@@ -9,6 +9,7 @@ IPTS = 7776
 first_run = 4756
 last_run = 6557
 load_every = 50
+use_autoreduced = True
 
 # For MD histo workspace
 BinningDim0 = '-10,10,1000'
