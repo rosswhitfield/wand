@@ -27,10 +27,13 @@ else:
     ws = LoadWAND(Filename=iptsdir+'nexus/HB2C_{}.nxs.h5'.format(run))
 
 if vanadium is not None:
-    if use_autoreduced_van:
-        cal = LoadNexus(Filename=iptsdir+'shared/autoreduce/HB2C_{}.nxs'.format(vanadium))
+    if 'cal' in mtd:
+        cal = mtd['cal']
     else:
-        cal = LoadWAND(Filename=iptsdir+'shared/autoreduce/HB2C_{}.nxs.h5'.format(vanadium))
+        if use_autoreduced_van:
+            cal = LoadNexus(Filename=iptsdir+'shared/autoreduce/HB2C_{}.nxs'.format(vanadium))
+        else:
+            cal = LoadWAND(Filename=iptsdir+'shared/autoreduce/HB2C_{}.nxs.h5'.format(vanadium))
 else:
     cal = None
 
