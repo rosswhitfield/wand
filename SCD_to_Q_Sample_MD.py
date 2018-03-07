@@ -32,26 +32,19 @@ name_MDE = name+'_MDE'
 if not append and name_MDE in mtd:
     DeleteWorkspace(name_MDE)
 
-try:
-    for run in range(first_run, last_run+1, load_every):
-        if use_autoreduced:
-            filename = iptsdir+'shared/autoreduce/HB2C_{}_MDE.nxs'.format(run)
+for run in range(first_run, last_run+1, load_every):
+    if use_autoreduced:
+        filename = iptsdir+'shared/autoreduce/HB2C_{}_MDE.nxs'.format(run)
+        try:
             LoadMD(Filename=filename, LoadHistory=False,
                    OutputWorkspace='__md')
-        else:
+        except ValueError:
             filename = iptsdir+'nexus/HB2C_{}.nxs.h5'.format(run)
             LoadWAND(filename, OutputWorkspace='__ws')
             ConvertToMD('__ws', QDimensions='Q3D', dEAnalysisMode='Elastic',
                         Q3DFrames='Q_sample', OutputWorkspace='__md',
                         MinValues='-10,-1,-10', MaxValues='10,1,10')
-        accumulateMD('__md', OutputWorkspace=name_MDE)
-except ValueError:
-    print("Could not load run {}\nSaving anyway".format(run))
-    SaveMD(name_MDE,
-           iptsdir+'shared/'+name+'_MDE_{}_to_{}_every_{}.nxs'.format(first_run,
-                                                                      run,
-                                                                      load_every))
-    raise ValueError("Could not load run {}".format(run))
+    accumulateMD('__md', OutputWorkspace=name_MDE)
 
 SaveMD(name_MDE,
        iptsdir+'shared/'+name+'_MDE_{}_to_{}_every_{}.nxs'.format(first_run,
