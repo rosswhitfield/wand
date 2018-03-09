@@ -47,7 +47,7 @@ def convertToHKL(ws, OutputWorkspace='__md_hkl', UB=None, Extents=[-10, 10, -10,
                 Uproj=Uproj, Vproj=Vproj, Wproj=Wproj)
 
     if Scale is not None:
-        mtd['__temp'] = mtd['__temp']/Scale
+        Scale(InputWorkspace='__temp', OutputWorkspace='__temp', Factor=scale)
 
     AlignedDim0 = "{},{},{},{}".format(mtd['__temp'].getDimension(0).name, Extents[0], Extents[1], int(Bins[0]))
     AlignedDim1 = "{},{},{},{}".format(mtd['__temp'].getDimension(1).name, Extents[2], Extents[3], int(Bins[1]))
