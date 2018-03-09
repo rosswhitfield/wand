@@ -37,16 +37,17 @@ def convertToQSample(ws, OutputWorkspace='__md_q_sample'):
     return OutputWorkspace
 
 
-def convertToHKL(ws, OutputWorkspace='__md_hkl', UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101], Append=False, Scale=None,
+def convertToHKL(ws, OutputWorkspace='__md_hkl', UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101], Append=False, scale=None,
                  Uproj=(1,0,0), Vproj=(0,1,0), Wproj=(0,0,1)):
     """Output MDHistoWorkspace in HKL
     """
 
     SetUB(ws, UB=UB)
+
     ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='__temp',
                 Uproj=Uproj, Vproj=Vproj, Wproj=Wproj)
 
-    if Scale is not None:
+    if scae is not None:
         Scale(InputWorkspace='__temp', OutputWorkspace='__temp', Factor=scale)
 
     AlignedDim0 = "{},{},{},{}".format(mtd['__temp'].getDimension(0).name, Extents[0], Extents[1], int(Bins[0]))
