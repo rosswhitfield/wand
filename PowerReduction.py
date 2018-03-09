@@ -1,20 +1,17 @@
 from mantid.simpleapi import LoadNexus, LoadWAND
 from wand import reduceToPowder
 
-
 name = 'Silicon'
 IPTS = 7776
 run = 7544
 vanadium = 7553 # Run number of `None`
-use_autoreduced = True
-use_autoreduced_van = True
 normaliseBy='Monitor' # One on (None, Monitor, Time)
 units = 'Theta' # One of (Theta, ElasticQ, ElasticDSpacing)
-Binning = '10,135,2500' # Min,Max,Number_of_bins
+Binning = '20,140,2500' # Min,Max,Number_of_bins
+use_autoreduced = True
+use_autoreduced_van = True
 
 
-###############################################################################
-#                    Do not edit below                                        #
 ###############################################################################
 
 iptsdir = '/HFIR/HB2C/IPTS-{}/'.format(IPTS)

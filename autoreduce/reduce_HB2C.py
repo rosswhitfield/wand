@@ -6,7 +6,7 @@ sys.path.append("/opt/mantidnightly/bin")
 from mantid.simpleapi import *
 from mantid import logger
 
-powder=False
+powder=True
 
 if (len(sys.argv) != 3): 
     logger.error("autoreduction code requires a filename and an output directory")
