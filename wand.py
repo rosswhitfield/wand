@@ -21,10 +21,13 @@ def reduceToPowder(ws, OutputWorkspace, cal=None, target='Theta', XMin=10, XMax=
         DeleteWorkspace('__cal')
 
     if normaliseBy == "Monitor":
-        NormaliseByCurrent(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace)
+        ws_monitor = mtd[ws].run().getProtonCharge()
+        cal_monitor = mtd[cal].run().getProtonCharge()        
+        Scale(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace, Factor=cal_monitor/ws_monitor)
     elif normaliseBy == "Time":
-        duration = mtd[ws].getRun().getLogData('duration').value
-        Scale(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace, Factor=1./duration)
+        ws_duration = mtd[ws].run().getLogData('duration').value
+        cal_duration = mtd[cal].run().getLogData('duration').value
+        Scale(InputWorkspace=OutputWorkspace, OutputWorkspace=OutputWorkspace, Factor=cal_duration/ws_duration)
 
     return OutputWorkspace
 
@@ -37,29 +40,27 @@ def convertToQSample(ws, OutputWorkspace='__md_q_sample'):
     return OutputWorkspace
 
 
-def convertToHKL(ws, OutputWorkspace='__md_hkl', UB=None, Extents=[-10, 10, -10, 10, -10, 10], Bins=[101, 101, 101], Append=False, scale=None,
+def convertToHKL(ws, OutputWorkspace='__md_hkl', UB=None, Append=False, scale=None,
+                 BinningDim0='-10.05,10.05,201', BinningDim1='-10.05,10.05,201', BinningDim2='-10.05,10.05,201',
                  Uproj=(1,0,0), Vproj=(0,1,0), Wproj=(0,0,1)):
     """Output MDHistoWorkspace in HKL
     """
 
     SetUB(ws, UB=UB)
 
-    ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='__temp',
+    ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic',
+                Q3DFrames='HKL', OutputWorkspace='__temp',
                 Uproj=Uproj, Vproj=Vproj, Wproj=Wproj)
 
     if scale is not None:
         mtd['__temp'] *= scale
 
-    AlignedDim0 = "{},{},{},{}".format(mtd['__temp'].getDimension(0).name, Extents[0], Extents[1], int(Bins[0]))
-    AlignedDim1 = "{},{},{},{}".format(mtd['__temp'].getDimension(1).name, Extents[2], Extents[3], int(Bins[1]))
-    AlignedDim2 = "{},{},{},{}".format(mtd['__temp'].getDimension(2).name, Extents[4], Extents[5], int(Bins[2]))
-
     BinMD(InputWorkspace='__temp',
           TemporaryDataWorkspace=OutputWorkspace if Append and mtd.doesExist(OutputWorkspace) else None,
           OutputWorkspace=OutputWorkspace,
-          AlignedDim0=AlignedDim0,
-          AlignedDim1=AlignedDim1,
-          AlignedDim2=AlignedDim2)
+          AlignedDim0=mtd['__temp'].getDimension(0).name+','+BinningDim0,
+          AlignedDim1=mtd['__temp'].getDimension(1).name+','+BinningDim1,
+          AlignedDim2=mtd['__temp'].getDimension(2).name+','+BinningDim2)
     DeleteWorkspace('__temp')
 
     return OutputWorkspace

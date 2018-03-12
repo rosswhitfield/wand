@@ -7,19 +7,19 @@ from mantid.simpleapi import (LoadMD, DeleteWorkspace, LoadWAND,
 name = 'EuPdIn4'
 IPTS = 20319
 first_run = 7562
-last_run = first_run+100 #8762
-load_every = 1
+last_run = first_run+1200 #8762
+load_every = 100
 vanadium = 7553
 vanadium_IPTS = 7776
 ub_file = '/HFIR/HB2C/IPTS-20319/shared/EuPdIn4_MDE.mat'
 
 # Binning for MD histo workspace; min,max,number_of_bins
-Uproj=(1,0,0)
+Uproj=(1,0,1)
 Vproj=(0,1,0)
-Wproj=(0,0,1)
-BinningDim0 = '-10,10,200'
-BinningDim1 = '-10,10,200'
-BinningDim2 = '-10,10,200'
+Wproj=(-1,0,1)
+BinningDim0 = '-10.05,10.05,201'
+BinningDim1 = '-15.05,15.05,301'
+BinningDim2 = '-1.05,1.05,21'
 
 ###############################################################################
 ###############################################################################
@@ -51,8 +51,10 @@ for run in range(first_run, last_run+1, load_every):
     LoadWAND(filename, OutputWorkspace='__ws')
     CopyInstrumentParameters('__ws', 'cal')
     mtd['cal'].run().getGoniometer().setR(mtd['__ws'].run().getGoniometer().getR())
-    convertToHKL('__ws', OutputWorkspace=data, UB=ub, Append=True, Uproj=Uproj, Vproj=Vproj, Wproj=Wproj)
-    convertToHKL('cal', OutputWorkspace=norm, UB=ub, Append=True, Uproj=Uproj, Vproj=Vproj, Wproj=Wproj, scale=mtd['__ws'].run().getProtonCharge())
+    convertToHKL('__ws', OutputWorkspace=data, UB=ub, Append=True, Uproj=Uproj, Vproj=Vproj, Wproj=Wproj,
+                 BinningDim0=BinningDim0, BinningDim1=BinningDim1, BinningDim2=BinningDim2)
+    convertToHKL('cal', OutputWorkspace=norm, UB=ub, Append=True, Uproj=Uproj, Vproj=Vproj, Wproj=Wproj, scale=mtd['__ws'].run().getProtonCharge(),
+                 BinningDim0=BinningDim0, BinningDim1=BinningDim1, BinningDim2=BinningDim2)
     DeleteWorkspace('__ws')
 
 SaveMD(data, iptsdir+'shared/{}_MDH_{}_to_{}_every_{}.nxs'.format(data, first_run, last_run, load_every))
