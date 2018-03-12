@@ -8,7 +8,7 @@ name = 'EuPdIn4'
 IPTS = 20319
 first_run = 7562
 last_run = first_run+1200 #8762
-load_every = 100
+load_every = 1
 vanadium = 7553
 vanadium_IPTS = 7776
 ub_file = '/HFIR/HB2C/IPTS-20319/shared/EuPdIn4_MDE.mat'
@@ -17,9 +17,9 @@ ub_file = '/HFIR/HB2C/IPTS-20319/shared/EuPdIn4_MDE.mat'
 Uproj=(1,0,1)
 Vproj=(0,1,0)
 Wproj=(-1,0,1)
-BinningDim0 = '-10.05,10.05,201'
-BinningDim1 = '-15.05,15.05,301'
-BinningDim2 = '-1.05,1.05,21'
+BinningDim0 = '-10.025,10.025,401'
+BinningDim1 = '-15.025,15.025,601'
+BinningDim2 = '-1.025,1.025,41'
 
 ###############################################################################
 ###############################################################################
