@@ -47,7 +47,7 @@ def convertToHKL(ws, OutputWorkspace='__md_hkl', UB=None, Extents=[-10, 10, -10,
     ConvertToMD(ws, QDimensions='Q3D', QConversionScales='HKL', dEAnalysisMode='Elastic', Q3DFrames='HKL', OutputWorkspace='__temp',
                 Uproj=Uproj, Vproj=Vproj, Wproj=Wproj)
 
-    if scae is not None:
+    if scale is not None:
         Scale(InputWorkspace='__temp', OutputWorkspace='__temp', Factor=scale)
 
     AlignedDim0 = "{},{},{},{}".format(mtd['__temp'].getDimension(0).name, Extents[0], Extents[1], int(Bins[0]))
