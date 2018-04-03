@@ -1,8 +1,9 @@
 import h5py
 import numpy as np
 import datetime
-run=6558
-filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_{}.nxs.h5'.format(run)
+run=26584
+ipts=20325
+filename='/HFIR/HB2C/IPTS-{}/nexus/HB2C_{}.nxs.h5'.format(ipts,run)
 out_filename='HB2C_{}.nxs'.format(run)
 
 instrument='WAND'
@@ -49,7 +50,7 @@ with h5py.File(filename, 'r') as f_in:
         data.attrs['NX_class'] = 'NXdata'
         data.attrs['signal'] = 'counts'
 
-        counts = data.create_dataset("counts", data=bc)
+        counts = data.create_dataset("counts", data=bc.T)
 
         inst = entry.create_group("instrument")
         inst.attrs['NX_class'] = 'NXinstrument'
