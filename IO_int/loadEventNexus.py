@@ -1,8 +1,9 @@
 import h5py
 import numpy as np
-import time
+import datetime
 run=6558
 filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_{}.nxs.h5'.format(run)
+out_filename='HB2C_{}.nxs'.format(run)
 
 instrument='WAND'
 wavelength = 1.488
@@ -30,7 +31,14 @@ with h5py.File(filename, 'r') as f_in:
     #start_time = f_in['entry/start_time'].value[0]
     instrument_name = f_in['entry/instrument/name']
 
-    with h5py.File('HB2C_{}.nxs'.format(run), 'w') as f_out:
+    with h5py.File(out_filename, 'w') as f_out:
+
+        f_out.attrs['NX_class'] = 'NXroot'
+        f_out.attrs['file_time'] = datetime.datetime.now().isoformat()
+        f_out.attrs['file_name'] = out_filename
+        f_out.attrs['HDF5_Version'] = h5py.version.hdf5_version
+        f_out.attrs['h5py_version'] = h5py.version.version
+
         entry = f_out.create_group("entry{}".format(n))
         entry.attrs['NX_class'] = 'NXentry'
 
@@ -56,7 +64,7 @@ with h5py.File(filename, 'r') as f_in:
         phi = gon.create_dataset('phi', shape=(1,), data=s1)
         phi.attrs['transformation_type'] = 'rotation'
         phi.attrs['vector'] = [0, 1, 0]
-        phi.attrs['unit'] = 'degree'
+        phi.attrs['unit'] = 'degrees'
 
         sample =  entry.create_group("sample")
         sample.attrs['NX_class'] = 'NXsample'
