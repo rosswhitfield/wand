@@ -38,8 +38,14 @@ with h5py.File('HB2C_{}.nxs'.format(run), 'w') as f:
     name.attrs['short_name'] = 'HB2C'
 
     mono = inst.create_group("monochromator")
+    mono.attrs['NX_class'] = 'NXmonochromator'
     mono.create_dataset('wavelength', w)
 
-    data.attrs['s1'] = s1
+    sample = entry.create_group("sample")
+    sample.attrs['NX_class'] = 'NXsample'
+    rot = sample.create_dataset('rotation_angle', s2)
+    rot.attrs['unit'] = 'degree'
+
+
     data.attrs['s2'] = s2
     data.attrs['detz'] = detz
