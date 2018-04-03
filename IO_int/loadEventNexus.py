@@ -9,6 +9,7 @@ filename='/HFIR/HB2C/IPTS-7776/nexus/HB2C_{}.nxs.h5'.format(run)
 
 instrument='WAND'
 wavelenght = 1.488
+n=1
 
 pixels = 480*512*8
 
@@ -21,12 +22,24 @@ with h5py.File(filename, 'r') as f:
     detz = f['entry/DASlogs/HB2C:Mot:detz.RBV/average_value'].value[0]
 
 with h5py.File('HB2C_{}.nxs'.format(run), 'w') as f:
-    entry = f.create_group("entry1")
+    entry = f.create_group("entry{}".format(n))
+    entry.attrs['NX_class'] = 'NXentry'
+
     data = entry.create_group("data")
-    data.attrs['instrument'] = 'WAND'
-    data.attrs['wavelength'] = w
+    data.attrs['NX_class'] = 'NXdata'
+
+    y_dset = data.create_dataset("y", data=bc)
+    e_dset = data.create_dataset("e", data=bc)
+
+    inst = entry.create_group("instrument")
+    inst.attrs['NX_class'] = 'NXinstrument'
+
+    name = inst.create_dataset('name', instrument)
+    name.attrs['short_name'] = 'HB2C'
+
+    mono = inst.create_group("monochromator")
+    mono.create_dataset('wavelength', w)
+
     data.attrs['s1'] = s1
     data.attrs['s2'] = s2
     data.attrs['detz'] = detz
-    dset = data.create_dataset("y", data=bc)
-    dset = data.create_dataset("e", data=bc)
