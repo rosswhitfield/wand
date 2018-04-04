@@ -20,6 +20,13 @@ copy_list = ['title',
              'experiment_title']
 
 with h5py.File(out_filename, 'w') as f_out:
+    f_out.attrs['NX_class'] = 'NXroot'
+    f_out.attrs['file_time'] = datetime.datetime.now().isoformat()
+    f_out.attrs['file_name'] = out_filename
+    f_out.attrs['HDF5_Version'] = h5py.version.hdf5_version
+    f_out.attrs['h5py_version'] = h5py.version.version
+    f_out.attrs['default'] = 'entry1'
+
     for run in runs:
         n+=1
         filename='/HFIR/HB2C/IPTS-{}/nexus/HB2C_{}.nxs.h5'.format(ipts,run)
@@ -31,15 +38,6 @@ with h5py.File(out_filename, 'w') as f_out:
             s1 = f_in['entry/DASlogs/HB2C:Mot:s1.RBV/average_value'].value[0]
             s2 = f_in['entry/DASlogs/HB2C:Mot:s2.RBV/average_value'].value[0]
             detz = f_in['entry/DASlogs/HB2C:Mot:detz.RBV/average_value'].value[0]
-            #title = f_in['entry/title'].value[0]
-            #start_time = f_in['entry/start_time'].value[0]
-            instrument_name = f_in['entry/instrument/name']
-
-            f_out.attrs['NX_class'] = 'NXroot'
-            f_out.attrs['file_time'] = datetime.datetime.now().isoformat()
-            f_out.attrs['file_name'] = out_filename
-            f_out.attrs['HDF5_Version'] = h5py.version.hdf5_version
-            f_out.attrs['h5py_version'] = h5py.version.version
 
             entry = f_out.create_group("entry{}".format(n))
             entry.attrs['NX_class'] = 'NXentry'
@@ -55,7 +53,7 @@ with h5py.File(out_filename, 'w') as f_out:
 
             inst = entry.create_group("instrument")
             inst.attrs['NX_class'] = 'NXinstrument'
-            inst.copy(instrument_name, 'name')
+            inst.copy(f_in['entry/instrument/name'], 'name')
 
             mono = inst.create_group("monochromator")
             mono.attrs['NX_class'] = 'NXmonochromator'
@@ -65,7 +63,7 @@ with h5py.File(out_filename, 'w') as f_out:
             gon.attrs['NX_class'] = 'NXtransformations'
             phi = gon.create_dataset('phi', shape=(1,), data=s1)
             phi.attrs['transformation_type'] = 'rotation'
-            phi.attrs['vector'] = [0, 1, 0]
+            phi.attrs['vector'] = np.array([0, 1, 0])
             phi.attrs['unit'] = 'degrees'
 
             sample =  entry.create_group("sample")
