@@ -60,15 +60,21 @@ with h5py.File(out_filename, 'w') as f_out:
             wl = mono.create_dataset('wavelength', shape=(1,), data=wavelength)
             wl.attrs['units'] = 'Angstrom'
 
-            gon = entry.create_group("goniometer")
+            gon = inst.create_group("goniometer")
             gon.attrs['NX_class'] = 'NXtransformations'
             phi = gon.create_dataset('phi', shape=(1,), data=s1)
             phi.attrs['transformation_type'] = 'rotation'
             phi.attrs['vector'] = np.array([0, 1, 0])
             phi.attrs['unit'] = 'degrees'
 
-            sample =  entry.create_group("sample")
-            sample.attrs['NX_class'] = 'NXsample'
+            det = inst.create_group("detector")
+            sample.attrs['NX_class'] = 'NXdetector'
+            # radius
+            # active_height
+            # active_width
+            # total_counts
+            # x_pixel_angular_offset
+            # y_pixel_offset
 
             data.attrs['s2'] = s2
             data.attrs['detz'] = detz
