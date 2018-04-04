@@ -20,7 +20,7 @@ copy_list = ['title',
              'experiment_identifier',
              'experiment_title']
 
-bc = np.empty((pixels),dtype=np.int64)
+bc = np.zeros((pixels),dtype=np.int64)
 with h5py.File(filename, 'r') as f_in:
     for b in range(8):
         bc += np.bincount(f_in['/entry/bank'+str(b+1)+'_events/event_id'].value,minlength=pixels)
@@ -28,8 +28,6 @@ with h5py.File(filename, 'r') as f_in:
     s1 = f_in['entry/DASlogs/HB2C:Mot:s1.RBV/average_value'].value[0]
     s2 = f_in['entry/DASlogs/HB2C:Mot:s2.RBV/average_value'].value[0]
     detz = f_in['entry/DASlogs/HB2C:Mot:detz.RBV/average_value'].value[0]
-    #title = f_in['entry/title'].value[0]
-    #start_time = f_in['entry/start_time'].value[0]
     instrument_name = f_in['entry/instrument/name']
 
     with h5py.File(out_filename, 'w') as f_out:

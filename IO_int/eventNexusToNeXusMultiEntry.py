@@ -31,7 +31,7 @@ with h5py.File(out_filename, 'w') as f_out:
         n+=1
         filename='/HFIR/HB2C/IPTS-{}/nexus/HB2C_{}.nxs.h5'.format(ipts,run)
         with h5py.File(filename, 'r') as f_in:
-            bc = np.empty((pixels),dtype=np.int64)
+            bc = np.zeros((pixels),dtype=np.int64)
             for b in range(8):
                 bc += np.bincount(f_in['/entry/bank'+str(b+1)+'_events/event_id'].value,minlength=pixels)
             bc=bc.reshape((-1,512))
@@ -57,7 +57,8 @@ with h5py.File(out_filename, 'w') as f_out:
 
             mono = inst.create_group("monochromator")
             mono.attrs['NX_class'] = 'NXmonochromator'
-            mono.create_dataset('wavelength', shape=(1,), data=wavelength)
+            wl = mono.create_dataset('wavelength', shape=(1,), data=wavelength)
+            wl.attrs['units'] = 'Angstrom'
 
             gon = entry.create_group("goniometer")
             gon.attrs['NX_class'] = 'NXtransformations'
