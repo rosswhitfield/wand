@@ -1,9 +1,9 @@
 import h5py
 import numpy as np
 import datetime
-runs=range(15954,15954+100) #17754+1)
+runs=range(15954, 17754+1) #15954+100) #17754+1)
 ipts=20367
-out_filename='HB2C_{}.nxs'.format('test_np')
+out_filename='HB2C_{}.nxs'.format('test_np_all')
 
 instrument='WAND'
 wavelength = 1.488
