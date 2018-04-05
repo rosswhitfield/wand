@@ -29,9 +29,10 @@ plt.scatter(y,-np.array(x))
 plt.show()
 
 
-plt.pcolormesh(b,vmin=threshold)
+
+plt.pcolormesh(a[:,:,250],vmax=threshold)
 plt.colorbar()
-plt.scatter(x, y)
+plt.scatter(y, x, marker='x', color='r')
 plt.show()
 
 
@@ -44,3 +45,10 @@ c[c<threshold]=0
 plt.imshow(c,vmax=threshold)
 plt.colorbar()
 plt.show()
+
+
+
+minimums, maximums, min_positions, max_positions = ndimage.extrema(b, labeled_array, list(range(1, num_features+1)))
+
+max_pos = np.array([[_x,_y] for _x,_y in max_positions])
+
