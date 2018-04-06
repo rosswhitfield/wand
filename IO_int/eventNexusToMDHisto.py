@@ -1,8 +1,8 @@
 from mantid.simpleapi import CreateMDHistoWorkspace
 import h5py
 import numpy as np
-import datetime
-runs=range(15954, 15954+100) #17754+1)
+import time
+runs=range(15954, 15954+1801) #17754+1)
 ipts=20367
 
 instrument='WAND'
@@ -11,6 +11,7 @@ wavelength = 1.488
 pixels = 480*512*8
 npoints = len(runs)
 
+t0=time.time()
 data_array = np.empty((npoints, 512, 480*8), dtype=np.int64)
 phi_array = np.empty((npoints), dtype=np.float64)
 
@@ -25,12 +26,14 @@ for n, run in enumerate(runs):
         data_array[n] = bc
         phi_array[n] = f_in['entry/DASlogs/HB2C:Mot:s1.RBV/average_value'].value[0]
 
+t1=time.time()
+print(t1-t0)
 print(data_array.shape)
 
-md2=CreateMDHistoWorkspace(SignalInput=data_array.flatten(),
-                          ErrorInput=data_array.flatten(),
+md=CreateMDHistoWorkspace(SignalInput=data_array.flatten('F'),
+                          ErrorInput=data_array.flatten('F'),
                           Dimensionality=3,
-                          Extents='0.5,3840.5,0.5,512.5,{},{}'.format(phi_array[0],phi_array[-1]),
-                          NumberOfBins='{},{},{}'.format(3840,512,npoints),
-                          Names='x,y,phi',
-                          Units='bin,bin,degrees')
+                          Extents='{},{},0.5,512.5,0.5,3840.5'.format(phi_array[0],phi_array[-1]),
+                          NumberOfBins='{},{},{}'.format(npoints,512,3840),
+                          Names='phi,x,y',
+                          Units='degrees,bin,bin')
