@@ -1,6 +1,6 @@
 import h5py
 import numpy as np
-runs=range(15954, 15954+101) #17754+1)
+runs=range(15954, 15954+1801,4) #17754+1)
 ipts=20367
 
 instrument='WAND'
@@ -21,7 +21,7 @@ for n, run in enumerate(runs):
             bc += np.bincount(f_in['/entry/bank'+str(b+1)+'_events/event_id'].value,minlength=pixels)
         bc=bc.reshape((-1,512)).T
         data_array[n] = bc
-        phi_array[n] = f_in['entry/DASlogs/HB2C:Mot:s1.RBV/average_value'].value[0]
+        phi_array[n] = f_in['/entry/DASlogs/HB2C:Mot:s1.RBV/average_value'].value[0]
 
 np.save('IPTS_20367_data.npy',data_array)
 np.save('IPTS_20367_phi.npy',phi_array)

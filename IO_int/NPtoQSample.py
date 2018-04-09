@@ -10,7 +10,7 @@ s2 = 2.0
 detz = 0.0
 k = 2*np.pi/1.488
 
-theta = np.linspace(0,120,8*480)+s2
+theta = np.deg2rad(np.linspace(0,120,8*480)+s2)
 x = np.sin(theta)*72
 z = np.cos(theta)*72
 y = np.linspace(-10,10,512)+detz
@@ -31,9 +31,9 @@ qz_lab = z_array_norm*k/bin_size
 
 qy_sample_int = qy_lab.astype(np.int)+20
 
-for n, phi in enumerate(phi):
-    qx_sample_int = (qx_lab*np.cos(phi) - qz_lab*np.sin(phi)).astype(np.int)+200
-    qz_sample_int = (qx_lab*np.sin(phi) + qz_lab*np.cos(phi)).astype(np.int)+200
+for n, p in enumerate(phi):
+    qx_sample_int = (qx_lab*np.cos(p) - qz_lab*np.sin(p)).astype(np.int)+200
+    qz_sample_int = (qx_lab*np.sin(p) + qz_lab*np.cos(p)).astype(np.int)+200
     np.add.at(output, (qx_sample_int.ravel(),
                        qy_sample_int.ravel(),
                        qz_sample_int.ravel()), data[n].ravel())
