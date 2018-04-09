@@ -10,7 +10,7 @@ s2 = 2.0
 detz = 0.0
 k = 2*np.pi/1.488
 
-theta = np.deg2rad(np.linspace(0,120,8*480)+s2)
+theta = np.deg2rad(np.linspace(0,120,8*480)+s2)[::-1]
 x = np.sin(theta)*72
 z = np.cos(theta)*72
 y = np.linspace(-10,10,512)+detz
