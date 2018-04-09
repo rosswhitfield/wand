@@ -9,7 +9,6 @@ wavelength = 1.488
 pixels = 480*512*8
 npoints = len(runs)
 
-t0=time.time()
 data_array = np.empty((npoints, 512, 480*8), dtype=np.int64)
 phi_array = np.empty((npoints), dtype=np.float64)
 
@@ -24,3 +23,5 @@ for n, run in enumerate(runs):
         data_array[n] = bc
         phi_array[n] = f_in['entry/DASlogs/HB2C:Mot:s1.RBV/average_value'].value[0]
 
+np.save('IPTS_20367_data.npy',data_array)
+np.save('IPTS_20367_phi.npy',phi_array)
