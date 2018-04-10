@@ -3,8 +3,8 @@ import numpy as np
 data = np.load('IPTS_20367_data.npy')
 phi = np.deg2rad(np.load('IPTS_20367_phi.npy'))
 
-output = np.zeros((401,41,401)) # -10 to 10 (x and z) -1 to 1 y
-bin_size = 0.05
+output = np.zeros((401,41,401)) # -8 to 8 (x and z) -0.8 to 0.8 y
+bin_size = 0.04
 
 s2 = 2.0
 detz = 0.0
@@ -23,7 +23,7 @@ xyz_norm = np.linalg.norm(xyz,axis=2)
 
 x_array_norm = xyz[:,:,0]/xyz_norm
 y_array_norm = xyz[:,:,1]/xyz_norm
-z_array_norm = xyz[:,:,2]/xyz_norm-1
+z_array_norm = xyz[:,:,2]/xyz_norm-1 # Kf - Ki
 
 qx_lab = x_array_norm*k/bin_size
 qy_lab = y_array_norm*k/bin_size
