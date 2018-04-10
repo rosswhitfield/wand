@@ -1,7 +1,11 @@
 import numpy as np
+import time
 
+t0 = time.time()
 data = np.load('IPTS_20367_data.npy')
 phi = np.deg2rad(np.load('IPTS_20367_phi.npy'))
+
+t1 = time.time()
 
 output = np.zeros((401,41,401)) # -8 to 8 (x and z) -0.8 to 0.8 y
 bin_size = 0.04
@@ -31,12 +35,20 @@ qz_lab = z_array_norm*k/bin_size
 
 qy_sample_int = qy_lab.astype(np.int)+20
 
+t2 = time.time()
+
 for n, p in enumerate(phi):
     qx_sample_int = (qx_lab*np.cos(p) - qz_lab*np.sin(p)).astype(np.int)+200
     qz_sample_int = (qx_lab*np.sin(p) + qz_lab*np.cos(p)).astype(np.int)+200
     np.add.at(output, (qx_sample_int.ravel(),
                        qy_sample_int.ravel(),
                        qz_sample_int.ravel()), data[n].ravel())
+
+t3 = time.time()
+
+print(t3-t2)
+print(t2-t1)
+print(t1-t0)
 
 import matplotlib.pyplot as plt
 plt.imshow(output[:,20,:])
