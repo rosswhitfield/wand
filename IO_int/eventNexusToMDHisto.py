@@ -36,4 +36,5 @@ md=CreateMDHistoWorkspace(SignalInput=data_array.flatten('F'),
                           Extents='{},{},0.5,512.5,0.5,3840.5'.format(phi_array[0],phi_array[-1]),
                           NumberOfBins='{},{},{}'.format(npoints,512,3840),
                           Names='phi,x,y',
-                          Units='degrees,bin,bin')
+                          Units='degrees,bin,bin',
+                          EnableLogging=False)
