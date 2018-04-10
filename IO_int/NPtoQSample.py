@@ -23,7 +23,7 @@ xyz_norm = np.linalg.norm(xyz,axis=2)
 
 x_array_norm = xyz[:,:,0]/xyz_norm
 y_array_norm = xyz[:,:,1]/xyz_norm
-z_array_norm = xyz[:,:,2]/xyz_norm
+z_array_norm = xyz[:,:,2]/xyz_norm-1
 
 qx_lab = x_array_norm*k/bin_size
 qy_lab = y_array_norm*k/bin_size
