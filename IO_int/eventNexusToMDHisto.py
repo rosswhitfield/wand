@@ -38,3 +38,6 @@ md=CreateMDHistoWorkspace(SignalInput=data_array.flatten('F'),
                           Names='phi,x,y',
                           Units='degrees,bin,bin',
                           EnableLogging=False)
+
+t2=time.time()
+print(t2-t1)
