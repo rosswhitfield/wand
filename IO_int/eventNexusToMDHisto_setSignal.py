@@ -32,7 +32,7 @@ print(data_array.shape)
 
 mdws = CreateMDWorkspace(Dimensions=3, Extents='-10,10,-10,10,-10,10', Names='A,B,C', Units='U,U,U')
 t2=time.time()
-binned_ws = BinMD(InputWorkspace=mdws, AlignedDim0='A,0,10,1800', AlignedDim1='B,-10,10,3840', AlignedDim2='C,-10,10,512')
+binned_ws = BinMD(InputWorkspace=mdws, AlignedDim0='A,0,10,1801', AlignedDim1='B,-10,10,512', AlignedDim2='C,-10,10,3840')
 t3=time.time()
 binned_ws.setSignalArray(data_array)
 t4=time.time()
