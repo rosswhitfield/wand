@@ -1,4 +1,4 @@
-from mantid.simpleapi import CreateMDHistoWorkspace
+from mantid.simpleapi import CreateMDHistoWorkspace, CreateMDWorkspace, BinMD
 import h5py
 import numpy as np
 import time
@@ -31,5 +31,11 @@ print(t1-t0)
 print(data_array.shape)
 
 mdws = CreateMDWorkspace(Dimensions=3, Extents='-10,10,-10,10,-10,10', Names='A,B,C', Units='U,U,U')
+t2=time.time()
 binned_ws = BinMD(InputWorkspace=mdws, AlignedDim0='A,0,10,1800', AlignedDim1='B,-10,10,3840', AlignedDim2='C,-10,10,512')
+t3=time.time()
 binned_ws.setSignalArray(data_array)
+t4=time.time()
+print(t2-t1)
+print(t3-t2)
+print(t4-t3)
