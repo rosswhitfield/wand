@@ -1,22 +1,18 @@
 import numpy as np
 import time
 
-ub = np.array([[  1.67134470e-01,   1.75052500e-01,   1.12450000e-04],
-               [  1.37797000e-03,   3.61410000e-04,  -2.30940900e-02],
-               [ -1.05633480e-01,   9.19279900e-02,  -1.23340000e-04]])
-
 t0 = time.time()
 data = np.load('IPTS_20367_data.npy')
 phi = np.deg2rad(np.load('IPTS_20367_phi.npy'))
 
 t1 = time.time()
 
-output = np.zeros((401,401,251)) # -8 to 8 (x and z) -5 to 5 y
+output = np.zeros((401,41,401)) # -8 to 8 (x and z) -0.8 to 0.8 y
 bin_size = 0.04
 
 s2 = 2.0
 detz = 0.0
-k = 1./1.488
+k = 2*np.pi/1.488
 
 theta = np.deg2rad(np.linspace(0,120,8*480)+s2)[::-1]
 x = np.sin(theta)*72
@@ -40,24 +36,26 @@ qz_lab = z_array_norm*k/bin_size
 t2 = time.time()
 
 d0= -200
-d1= -200
-d2= -125
+d1= -20
+d2= -200
 
 qlab=np.vstack((qx_lab.flatten(),qy_lab.flatten(),qz_lab.flatten())).T
 
+outputr = output.ravel()
 
 for n, p in enumerate(phi):
     R = np.array([[ np.cos(p), 0, np.sin(p)],
                   [         0, 1,         0],
                   [-np.sin(p), 0, np.cos(p)]])
-    RUBW = np.dot(R,ub)
-    q_sample = np.dot(np.linalg.inv(RUBW),qlab.T).T
+    q_sample = np.dot(np.linalg.inv(R),qlab.T).T
     qx_sample = np.round(q_sample[:,0]).astype(np.int)-d0
     qy_sample = np.round(q_sample[:,1]).astype(np.int)-d1
-    qz_sample = np.round(q_sample[:,2]).astype(np.int)-d2                     
-    np.add.at(output, (qx_sample.ravel(),
-                       qy_sample.ravel(),
-                       qz_sample.ravel()), data[n].ravel())
+    qz_sample = np.round(q_sample[:,2]).astype(np.int)-d2
+    #np.add.at(output, (qx_sample.ravel(),
+    #                   qy_sample.ravel(),
+    #                   qz_sample.ravel()), data[n].ravel())
+    m = qx_sample*41*401 + qy_sample*401 + qz_sample
+    outputr += np.bincount(m, data[n].ravel(), minlength=output.size)
 
 t3 = time.time()
 
@@ -69,5 +67,5 @@ import matplotlib.pyplot as plt
 plt.imshow(output[:,20,:])
 plt.show()
 
-plt.imshow(output.sum(axis=2),vmax=10000)
+plt.imshow(output.sum(axis=1))
 plt.show()
