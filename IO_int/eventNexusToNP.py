@@ -1,6 +1,6 @@
 import h5py
 import numpy as np
-runs=range(15954, 15954+1801,100) #17754+1)
+runs=range(15954, 15954+1801,1) #17754+1)
 ipts=20367
 
 instrument='WAND'
