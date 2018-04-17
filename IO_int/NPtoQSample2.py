@@ -39,18 +39,20 @@ d0= -200
 d1= -20
 d2= -200
 
+qlab=np.vstack((qx_lab.flatten(),qy_lab.flatten(),qz_lab.flatten())).T
+
 
 for n, p in enumerate(phi):
-    R = np.array([[ np.cos(s1[n]), 0, np.sin(s1[n])],
-                  [             0, 1,             0],
-                  [-np.sin(s1[n]), 0, np.cos(s1[n])]])
+    R = np.array([[ np.cos(p), 0, np.sin(p)],
+                  [         0, 1,         0],
+                  [-np.sin(p), 0, np.cos(p)]])
     q_sample = np.dot(np.linalg.inv(R),qlab.T).T
     qx_sample = np.round(q_sample[:,0]).astype(np.int)-d0
     qy_sample = np.round(q_sample[:,1]).astype(np.int)-d1
     qz_sample = np.round(q_sample[:,2]).astype(np.int)-d2                     
-    np.add.at(output, (qx_sample_int.ravel(),
-                       qy_sample_int.ravel(),
-                       qz_sample_int.ravel()), data[n].ravel())
+    np.add.at(output, (qx_sample.ravel(),
+                       qy_sample.ravel(),
+                       qz_sample.ravel()), data[n].ravel())
 
 t3 = time.time()
 
