@@ -11,7 +11,7 @@ phi = np.deg2rad(np.load('IPTS_20367_phi.npy'))
 
 t1 = time.time()
 
-output = np.zeros((401,41,401)) # -8 to 8 (x and z) -0.8 to 0.8 y
+output = np.zeros((401,401,251)) # -8 to 8 (x and z) -5 to 5 y
 bin_size = 0.04
 
 s2 = 2.0
@@ -37,16 +37,27 @@ qx_lab = x_array_norm*k/bin_size
 qy_lab = y_array_norm*k/bin_size
 qz_lab = z_array_norm*k/bin_size
 
-qy_sample_int = qy_lab.astype(np.int)+20
-
 t2 = time.time()
 
+d0= -200
+d1= -200
+d2= -125
+
+qlab=np.vstack((qx_lab.flatten(),qy_lab.flatten(),qz_lab.flatten())).T
+
+
 for n, p in enumerate(phi):
-    qx_sample_int = (qx_lab*np.cos(p) - qz_lab*np.sin(p)).astype(np.int)+200
-    qz_sample_int = (qx_lab*np.sin(p) + qz_lab*np.cos(p)).astype(np.int)+200
-    np.add.at(output, (qx_sample_int.ravel(),
-                       qy_sample_int.ravel(),
-                       qz_sample_int.ravel()), data[n].ravel())
+    R = np.array([[ np.cos(p), 0, np.sin(p)],
+                  [         0, 1,         0],
+                  [-np.sin(p), 0, np.cos(p)]])
+    RUBW = np.dot(R,ub)
+    q_sample = np.dot(np.linalg.inv(RUBW),qlab.T).T
+    qx_sample = np.round(q_sample[:,0]).astype(np.int)-d0
+    qy_sample = np.round(q_sample[:,1]).astype(np.int)-d1
+    qz_sample = np.round(q_sample[:,2]).astype(np.int)-d2                     
+    np.add.at(output, (qx_sample.ravel(),
+                       qy_sample.ravel(),
+                       qz_sample.ravel()), data[n].ravel())
 
 t3 = time.time()
 
