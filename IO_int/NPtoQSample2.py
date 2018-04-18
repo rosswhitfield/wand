@@ -56,9 +56,9 @@ for n, p in enumerate(phi):
 
 t3 = time.time()
 
-print(t3-t2)
-print(t2-t1)
 print(t1-t0)
+print(t2-t1)
+print(t3-t2)
 
 import matplotlib.pyplot as plt
 plt.imshow(output[:,20,:])
