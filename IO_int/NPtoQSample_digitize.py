@@ -29,30 +29,30 @@ x_array_norm = xyz[:,:,0]/xyz_norm
 y_array_norm = xyz[:,:,1]/xyz_norm
 z_array_norm = xyz[:,:,2]/xyz_norm-1 # Kf - Ki
 
-qx_lab = x_array_norm*k/bin_size
-qy_lab = y_array_norm*k/bin_size
-qz_lab = z_array_norm*k/bin_size
+qx_lab = x_array_norm*k
+qy_lab = y_array_norm*k
+qz_lab = z_array_norm*k
 
 t2 = time.time()
 
-d0= -200
-d1= -20
-d2= -200
-
 qlab=np.vstack((qx_lab.flatten(),qy_lab.flatten(),qz_lab.flatten())).T
 
+x_bins = np.linspace(-8.02,8.02,402)
+y_bins = np.linspace(-0.82,0.82,42)
+z_bins = np.linspace(-8.02,8.02,402)
 
 for n, p in enumerate(phi):
     R = np.array([[ np.cos(p), 0, np.sin(p)],
                   [         0, 1,         0],
                   [-np.sin(p), 0, np.cos(p)]])
     q_sample = np.dot(np.linalg.inv(R),qlab.T).T
-    qx_sample = np.round(q_sample[:,0]).astype(np.int)-d0
-    qy_sample = np.round(q_sample[:,1]).astype(np.int)-d1
-    qz_sample = np.round(q_sample[:,2]).astype(np.int)-d2                     
-    np.add.at(output, (qx_sample.ravel(),
-                       qy_sample.ravel(),
-                       qz_sample.ravel()), data[n].ravel())
+    qx_sample = np.digitize(q_sample[:,0], x_bins)
+    qy_sample = np.digitize(q_sample[:,1], y_bins)
+    qz_sample = np.digitize(q_sample[:,2], z_bins)
+    np.add.at(output, (qx_sample,
+                       qy_sample,
+                       qz_sample), data[n].ravel())
+
 
 t3 = time.time()
 
