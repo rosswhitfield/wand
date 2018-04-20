@@ -48,13 +48,14 @@ d2= -125
 
 qlab=np.vstack((qx_lab.flatten(),qy_lab.flatten(),qz_lab.flatten())).T
 
+UBW = np.dot(ub,W)
 
 for n, p in enumerate(phi):
     R = np.array([[ np.cos(p), 0, np.sin(p)],
                   [         0, 1,         0],
                   [-np.sin(p), 0, np.cos(p)]])
-    RUB = np.dot(R,ub)
-    RUBW = np.dot(RUB,W)
+    #RUB = np.dot(R,ub)
+    RUBW = np.dot(R,UBW)
     q_sample = np.dot(np.linalg.inv(RUBW),qlab.T).T
     qx_sample = np.round(q_sample[:,0]).astype(np.int)-d0
     qy_sample = np.round(q_sample[:,1]).astype(np.int)-d1
@@ -70,6 +71,7 @@ print(t2-t1)
 print(t1-t0)
 
 import matplotlib.pyplot as plt
+
 
 plt.imshow(output.sum(axis=2),vmax=10000)
 plt.show()
