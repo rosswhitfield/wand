@@ -17,5 +17,12 @@ x_max = 0
 z_min = 0
 z_max = 0
 for angle in s1:
-    rot = [[np.cos(angle), -np.sin(angle)],[np.sin(angle), np.cos(angle)]]
-    
+    rot = [[np.cos(angle), np.sin(angle)],[-np.sin(angle), np.cos(angle)]]
+    xx, zz = np.dot(rot,[x,z])
+    x_min = min(x_min, xx)
+    x_max = max(x_max, xx)
+    z_min = min(z_min, zz)
+    z_max = max(z_max, zz)
+
+print(x_min,x_max)
+print(z_min,z_max)
