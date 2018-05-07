@@ -1,4 +1,4 @@
-si=LoadEventNexus('/HFIR/HB2C/IPTS-7776/nexus/HB2C_26632.nxs.h5')
+Rsi=LoadEventNexus('/HFIR/HB2C/IPTS-7776/nexus/HB2C_26632.nxs.h5')
 van=LoadWAND('/HFIR/HB2C/IPTS-7776/nexus/HB2C_26617.nxs.h5')
 
 GenerateEventsFilter(InputWorkspace='si', OutputWorkspace='filter', InformationWorkspace='info', TimeInterval='0.5',StartTime='0',StopTime='40')
