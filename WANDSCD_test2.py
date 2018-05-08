@@ -8,4 +8,4 @@ ConvertWANDSCDtoQ(InputWorkspace='data', NormalisationWorkspace='norm',OutputWor
 FindPeaksMD(InputWorkspace='q_norm', PeakDistanceThreshold=2, MaxPeaks=100, CalculateGoniometerForCW=True, Wavelength=1.488, OutputWorkspace='peaks')
 FindUBUsingLatticeParameters(PeaksWorkspace='peaks', a=5.64, b=5.64, c=5.64, alpha=90, beta=90, gamma=90)
 ConvertWANDSCDtoQ(InputWorkspace='data', NormalisationWorkspace='norm',UBWorkspace='peaks',Frame='HKL',OutputWorkspace='hkl_norm',BinningDim0='-0.6,0.6,61',BinningDim2='-6.51,6.51,651',BinningDim1='-2.01,7.01,451')
-#ConvertWANDSCDtoQ(InputWorkspace='data', NormalisationWorkspace='norm',UBWorkspace='peaks',Frame='HKL',OutputWorkspace='hkl_norm',BinningDim0='-0.6,0.6,61',BinningDim1='-6.51,6.51,651',BinningDim2='-2.01,7.01,451')
+#ConvertWANDSCDtoQ(InputWorkspace='data', NormalisationWorkspace='norm',UBWorkspace='peaks',Frame='HKL',OutputWorkspace='hkl_norm',BinningDim2='-0.6,0.6,61',BinningDim0='-6.51,6.51,651',BinningDim1='-2.01,7.01,451')
