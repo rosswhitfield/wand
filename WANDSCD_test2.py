@@ -32,8 +32,23 @@ LoadWANDSCD(IPTS=7776, RunNumbers=26509, OutputWorkspace='norm',Grouping='4x4')
 LoadWANDSCD(IPTS=7776, RunNumbers='26640-27944', OutputWorkspace='data',Grouping='4x4')
 ConvertWANDSCDtoQ(InputWorkspace='data', NormalisationWorkspace='norm',OutputWorkspace='q_norm',KeepTemporaryWorkspaces=True)
 ConvertWANDSCDtoQ(InputWorkspace='data', NormalisationWorkspace='norm',OutputWorkspace='q_norm2',BinningDim1='-0.81,0.81,81',BinningDim0='-8.01,8.01,801',BinningDim2='-8.01,8.01,801')
+ConvertWANDSCDtoQ(InputWorkspace='data', NormalisationWorkspace='norm',OutputWorkspace='q_norm3',BinningDim1='-0.805,0.805,161',BinningDim0='-8.005,8.005,1601',BinningDim2='-8.005,8.005,1601')
 
 
 FindPeaksMD(InputWorkspace='q_norm2', PeakDistanceThreshold=2, MaxPeaks=100, CalculateGoniometerForCW=True, Wavelength=1.488, OutputWorkspace='peaks')
 FindUBUsingLatticeParameters(PeaksWorkspace='peaks', a=5.64, b=5.64, c=5.64, alpha=90, beta=90, gamma=90)
 ConvertWANDSCDtoQ(InputWorkspace='data',NormalisationWorkspace='norm',UBWorkspace='peaks',Frame='HKL',OutputWorkspace='hkl_norm',BinningDim0='-0.6,0.6,61',BinningDim2='-6.51,6.51,651',BinningDim1='-2.01,7.01,451',KeepTemporaryWorkspaces=True)
+
+
+
+
+LoadWANDSCD(IPTS=7776, RunNumbers=26509, OutputWorkspace='norm2',Grouping='2x2')
+LoadWANDSCD(IPTS=7776, RunNumbers='26640-27944', OutputWorkspace='data2',Grouping='2x2')
+ConvertWANDSCDtoQ(InputWorkspace='data2', NormalisationWorkspace='norm2',OutputWorkspace='q_norm',KeepTemporaryWorkspaces=True)
+ConvertWANDSCDtoQ(InputWorkspace='data2', NormalisationWorkspace='norm2',OutputWorkspace='q_norm2',BinningDim1='-0.81,0.81,81',BinningDim0='-8.01,8.01,801',BinningDim2='-8.01,8.01,801')
+ConvertWANDSCDtoQ(InputWorkspace='data2', NormalisationWorkspace='norm2',OutputWorkspace='q2_norm3',BinningDim1='-0.805,0.805,161',BinningDim0='-8.005,8.005,1601',BinningDim2='-8.005,8.005,1601')
+
+
+FindPeaksMD(InputWorkspace='q_norm2', PeakDistanceThreshold=2, MaxPeaks=100, CalculateGoniometerForCW=True, Wavelength=1.488, OutputWorkspace='peaks')
+FindUBUsingLatticeParameters(PeaksWorkspace='peaks', a=5.64, b=5.64, c=5.64, alpha=90, beta=90, gamma=90)
+ConvertWANDSCDtoQ(InputWorkspace='data2',NormalisationWorkspace='norm2',UBWorkspace='peaks',Frame='HKL',OutputWorkspace='hkl_norm',BinningDim0='-0.6,0.6,61',BinningDim2='-6.51,6.51,651',BinningDim1='-2.01,7.01,451',KeepTemporaryWorkspaces=True)
