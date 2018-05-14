@@ -32,7 +32,7 @@ LoadWANDSCD(IPTS=7776, RunNumbers=26509, OutputWorkspace='norm',Grouping='4x4')
 LoadWANDSCD(IPTS=7776, RunNumbers='26640-27944', OutputWorkspace='data',Grouping='4x4')
 ConvertWANDSCDtoQ(InputWorkspace='data', NormalisationWorkspace='norm',OutputWorkspace='q_norm',KeepTemporaryWorkspaces=True)
 ConvertWANDSCDtoQ(InputWorkspace='data', NormalisationWorkspace='norm',OutputWorkspace='q_norm2',BinningDim1='-0.81,0.81,81',BinningDim0='-8.01,8.01,801',BinningDim2='-8.01,8.01,801')
-ConvertWANDSCDtoQ(InputWorkspace='data', NormalisationWorkspace='norm',OutputWorkspace='q_norm3',BinningDim1='-0.805,0.805,161',BinningDim0='-8.005,8.005,1601',BinningDim2='-8.005,8.005,1601')
+#ConvertWANDSCDtoQ(InputWorkspace='data', NormalisationWorkspace='norm',OutputWorkspace='q_norm3',BinningDim1='-0.805,0.805,161',BinningDim0='-8.005,8.005,1601',BinningDim2='-8.005,8.005,1601')
 
 
 FindPeaksMD(InputWorkspace='q_norm2', PeakDistanceThreshold=2, MaxPeaks=100, CalculateGoniometerForCW=True, Wavelength=1.488, OutputWorkspace='peaks')
