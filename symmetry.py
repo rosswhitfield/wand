@@ -5,11 +5,12 @@ import numpy as np
 ws_name = 'hkl'
 
 two_fold = True # Apply two fold rotataion symmetry around the z axis
+rotation_axis = 2 # dimension number to rotate arond, starting at 0
 mirror_x = True # Mirror in the first dimension
 mirror_y = True # Mirror in the second dimension
 mirror_z = False # Mirror in the third dimension
 
-###############################################################
+#######################################################################################################
 
 try:
     data = mtd[ws_name+'_data']
@@ -17,7 +18,8 @@ try:
     norm = mtd[ws_name+'_normalization']
     norm_signal = norm.getSignalArray()
 except KeyError:
-    raise RuntimeError('{} and {} must exist'.format(ws_name+'_data', ws_name+'_normalization'))
+    raise RuntimeError('ws_name should be base name and you need to run ConvertWANDSCDtoQ with '
+                       'KeepTemporaryWorkspaces=True. {} and {} must exist'.format(ws_name+'_data', ws_name+'_normalization'))
 
 if two_fold:
     d0=data.getDimension(0)
