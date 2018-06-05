@@ -1,12 +1,14 @@
 import numpy as np
 from mantid.simpleapi import mtd, CloneMDWorkspace, DivideMD
+
+
 # Need to run ConvertWANDSCDtoQ with KeepTemporaryWorkspaces=True
 
 ws_name = 'hkl'
 
 two_fold = False        # Apply two-fold rotataion symmetry in the rotation_axes plane
 four_fold = True        # Apply four-fold rotataion symmetry in the rotation_axes plane
-rotation_axes = (0, 1)  # plane of rotation
+rotation_axes = (0, 1)  # plane of rotation; (0, 1) would be a rotation around the z axis
 mirror_x = True         # Mirror in the first dimension
 mirror_y = True         # Mirror in the second dimension
 mirror_z = False        # Mirror in the third dimension
