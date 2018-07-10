@@ -39,7 +39,7 @@ FindUBUsingLatticeParameters(PeaksWorkspace='peaks', a=5.64, b=5.64, c=5.64, alp
 ConvertWANDSCDtoQ(InputWorkspace='data',NormalisationWorkspace='norm',UBWorkspace='peaks',Frame='HKL',OutputWorkspace='hkl_norm',BinningDim0='-0.6,0.6,61',BinningDim2='-6.51,6.51,651',BinningDim1='-2.01,7.01,451',KeepTemporaryWorkspaces=True)
 
 
-
+ 
 
 LoadWANDSCD(IPTS=7776, RunNumbers=26509, OutputWorkspace='norm2',Grouping='2x2')
 LoadWANDSCD(IPTS=7776, RunNumbers='26640-27944', OutputWorkspace='data2',Grouping='2x2')
