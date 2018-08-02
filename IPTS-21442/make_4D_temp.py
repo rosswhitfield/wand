@@ -21,5 +21,5 @@ for n, t in enumerate(range(5,30)):
     signal[:,:,:,n]=mtd['{}K'.format(t)].getSignalArray()
 
 output.setSignalArray(signal)
-
     
+SliceMDHisto(InputWorkspace='output', Start='10,10,10,0', End='51,51,11,25', OutputWorkspace='slice')
