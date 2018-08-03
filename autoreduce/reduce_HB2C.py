@@ -16,6 +16,7 @@ with h5py.File(filename, 'r') as f:
             powder=True
 
 if powder:
+
     sys.path.append("/opt/mantidnightly/bin")
     from mantid.simpleapi import LoadWAND, WANDPowderReduction, SavePlot1D
 
@@ -31,16 +32,15 @@ if powder:
     from postprocessing.publish_plot import publish_plot
     request = publish_plot('HB2C', runNumber, files={'file': div})
 
-
 else: # Single Crystal
+
     import matplotlib as mpl
     mpl.use( "agg" )
     import matplotlib.pyplot as plt
-    #from matplotlib.image import imsave
     import numpy as np
     with h5py.File(filename, 'r') as f:
         offset=f['/entry/DASlogs/HB2C:Mot:s2.RBV/average_value'].value[0]
-        print(offset)
+        title=f['/entry/title'].value[0]
         bc = np.zeros((512*480*8),dtype=np.int64)
         for b in range(8):
             bc += np.bincount(f['/entry/bank'+str(b+1)+'_events/event_id'].value,minlength=512*480*8)
@@ -49,17 +49,16 @@ else: # Single Crystal
               + bc[::4,1::4] + bc[1::4,1::4] + bc[2::4,1::4] + bc[3::4,1::4]
               + bc[::4,2::4] + bc[1::4,2::4] + bc[2::4,2::4] + bc[3::4,2::4]
               + bc[::4,3::4] + bc[1::4,3::4] + bc[2::4,3::4] + bc[3::4,3::4])
-    f, (ax1, ax2) = plt.subplots(2)
-    ax1.set_title(u'{}, s2={:.2f}°'.format(output_file,offset))
-    ax1.plot(np.linspace(offset,120+offset,960),bc.sum(1))
+    f, (ax1, ax2) = plt.subplots(2, figsize=(8,4))
+    ax1.set_title(u'{}, {}, s2={:.2f}'.format(title,output_file,offset))
+    ax1.plot(np.linspace(offset,120+offset,960),bc.sum(1)[::-1])
     ax1.set_xlim(offset,120+offset)
+    plt.setp(ax1.get_xticklabels(), visible=False)
     ax2.imshow(bc.T[::-1,::-1], cmap='viridis',aspect=1/7.5,extent=(offset,120+offset,0,128),vmin=0,vmax=np.sqrt(bc.max()))
-    ax2.set_xlabel('2theta')
+    ax2.set_xlabel(u'2theta')
     ax2.set_xlim(offset,120+offset)
     ax2.set_ylim(0,128)
     ax2.get_yaxis().set_visible(False)
-    #f.subplots_adjust(top=0)
     f.tight_layout()
+    f.subplots_adjust(hspace=0.001)
     plt.savefig(outdir+output_file)
-    
-    #imsave(outdir+output_file, bc.T)
