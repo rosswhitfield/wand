@@ -7,22 +7,16 @@ filename = sys.argv[1]
 output_file=os.path.split(filename)[-1].replace('.nxs.h5','')
 outdir = sys.argv[2]
 
-powder=True
+powder=False
 
 with h5py.File(filename, 'r') as f:
     if '/entry/DASlogs/HB2C:CS:ITEMS:Nature' in f:
         nature = f['/entry/DASlogs/HB2C:CS:ITEMS:Nature/value'].value[0][0]
-        if nature != 'Powder':
-            powder=False
-            print("Sample is {}, skipping autoreduction\nAutoreduction is only run on Powder samples".format(nature))
-            #sys.exit()
-    else:
-        print("Sample Nature not found, skipping autoreduction")
-        sys.exit()
-
-sys.path.append("/opt/mantidnightly/bin")
+        if nature == 'Powder':
+            powder=True
 
 if powder:
+    sys.path.append("/opt/mantidnightly/bin")
     from mantid.simpleapi import LoadWAND, WANDPowderReduction, SavePlot1D
 
     data = LoadWAND(filename)
@@ -40,12 +34,13 @@ if powder:
 
 else: # Single Crystal
     import matplotlib as mpl
-    mpl.use( "agg" )    
+    mpl.use( "agg" )
     import matplotlib.pyplot as plt
     #from matplotlib.image import imsave
     import numpy as np
     with h5py.File(filename, 'r') as f:
-        offset=f['/entry/DASlogs/HB2C:Mot:s2.RBV.average'].value
+        offset=f['/entry/DASlogs/HB2C:Mot:s2.RBV/average_value'].value[0]
+        print(offset)
         bc = np.zeros((512*480*8),dtype=np.int64)
         for b in range(8):
             bc += np.bincount(f['/entry/bank'+str(b+1)+'_events/event_id'].value,minlength=512*480*8)
@@ -54,5 +49,17 @@ else: # Single Crystal
               + bc[::4,1::4] + bc[1::4,1::4] + bc[2::4,1::4] + bc[3::4,1::4]
               + bc[::4,2::4] + bc[1::4,2::4] + bc[2::4,2::4] + bc[3::4,2::4]
               + bc[::4,3::4] + bc[1::4,3::4] + bc[2::4,3::4] + bc[3::4,3::4])
+    f, (ax1, ax2) = plt.subplots(2)
+    ax1.set_title(u'{}, s2={:.2f}°'.format(output_file,offset))
+    ax1.plot(np.linspace(offset,120+offset,960),bc.sum(1))
+    ax1.set_xlim(offset,120+offset)
+    ax2.imshow(bc.T[::-1,::-1], cmap='viridis',aspect=1/7.5,extent=(offset,120+offset,0,128),vmin=0,vmax=np.sqrt(bc.max()))
+    ax2.set_xlabel('2theta')
+    ax2.set_xlim(offset,120+offset)
+    ax2.set_ylim(0,128)
+    ax2.get_yaxis().set_visible(False)
+    #f.subplots_adjust(top=0)
+    f.tight_layout()
+    plt.savefig(outdir+output_file)
     
-    imsave(outdir+output_file, bc.T)
+    #imsave(outdir+output_file, bc.T)
