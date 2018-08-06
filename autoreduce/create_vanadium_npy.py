@@ -1,7 +1,7 @@
 import numpy as np
 import h5py
 
-runNumber = 29780
+runNumber = 101567
 
 with h5py.File('/HFIR/HB2C/IPTS-7776/nexus/HB2C_{}.nxs.h5'.format(runNumber), 'r') as f:
     bc = np.zeros((512*480*8))
