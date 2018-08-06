@@ -53,8 +53,8 @@ else: # Single Crystal
               + bc[::4,2::4] + bc[1::4,2::4] + bc[2::4,2::4] + bc[3::4,2::4]
               + bc[::4,3::4] + bc[1::4,3::4] + bc[2::4,3::4] + bc[3::4,3::4])
 
-    vanadium = np.load('/HFIR/HB2C/shared/autoreduce/vanadium.npy')
-    vanadium_mon = 103054259
+    vanadium = np.load('/HFIR/HB2C/shared/autoreduce/vanadium_101567.npy')
+    vanadium_mon = 163519902
     bc = bc / vanadium * vanadium_mon / mon
     f, (ax1, ax2) = plt.subplots(2, figsize=(8,4))
     ax1.set_title(u'{}, {}, s2={:.2f}, duration={:.1f}s'.format(title,output_file,offset,duration))
