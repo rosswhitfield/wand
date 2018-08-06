@@ -13,7 +13,7 @@ with h5py.File(filename, 'r') as f:
     if '/entry/DASlogs/HB2C:CS:ITEMS:Nature' in f:
         nature = f['/entry/DASlogs/HB2C:CS:ITEMS:Nature/value'].value[0][0]
         if nature == 'Powder':
-            powder=True
+            powder=False
 
 if powder:
 
@@ -37,6 +37,7 @@ else: # Single Crystal
     import matplotlib as mpl
     mpl.use( "agg" )
     import matplotlib.pyplot as plt
+    from matplotlib.colors import LogNorm
     import numpy as np
     with h5py.File(filename, 'r') as f:
         offset=f['/entry/DASlogs/HB2C:Mot:s2.RBV/average_value'].value[0]
@@ -54,7 +55,7 @@ else: # Single Crystal
     ax1.plot(np.linspace(offset,120+offset,960),bc.sum(1)[::-1])
     ax1.set_xlim(offset,120+offset)
     plt.setp(ax1.get_xticklabels(), visible=False)
-    ax2.imshow(bc.T[::-1,::-1], cmap='viridis',aspect=1/7.5,extent=(offset,120+offset,0,128),vmin=0,vmax=np.sqrt(bc.max()))
+    ax2.imshow(bc.T[::-1,::-1], cmap='viridis',aspect=1/7.5,extent=(offset,120+offset,0,128),norm=LogNorm(vmin=1, vmax=bc.max()))
     ax2.set_xlabel(u'2theta')
     ax2.set_xlim(offset,120+offset)
     ax2.set_ylim(0,128)
