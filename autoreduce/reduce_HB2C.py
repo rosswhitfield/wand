@@ -43,6 +43,7 @@ else: # Single Crystal
         offset=f['/entry/DASlogs/HB2C:Mot:s2.RBV/average_value'].value[0]
         title=f['/entry/title'].value[0]
         mon=f['/entry/monitor1/total_counts'].value[0]
+        duration=f['/entry/duration'].value[0]
         bc = np.zeros((512*480*8))
         for b in range(8):
             bc += np.bincount(f['/entry/bank'+str(b+1)+'_events/event_id'].value,minlength=512*480*8)
@@ -56,16 +57,16 @@ else: # Single Crystal
     vanadium_mon = 103054259
     bc = bc / vanadium * vanadium_mon / mon
     f, (ax1, ax2) = plt.subplots(2, figsize=(8,4))
-    ax1.set_title(u'{}, {}, s2={:.2f}'.format(title,output_file,offset))
+    ax1.set_title(u'{}, {}, s2={:.2f}, duration={:.1f}s'.format(title,output_file,offset,duration))
     ax1.plot(np.linspace(offset,120+offset,960),bc.sum(1)[::-1])
     ax1.set_xlim(offset,120+offset)
     plt.setp(ax1.get_xticklabels(), visible=False)
-    ax2.imshow(bc.T[::-1,::-1], cmap='viridis',aspect=1/7.5,extent=(offset,120+offset,0,128))
+    im = ax2.imshow(bc.T[::-1,::-1], cmap='viridis',aspect=1/7.5,extent=(offset,120+offset,0,128))
     ax2.set_xlabel(u'2theta')
     ax2.set_xlim(offset,120+offset)
     ax2.set_ylim(0,128)
     ax2.get_yaxis().set_visible(False)
+    cb = f.colorbar(im)
+    ax2.set_aspect('auto')
     f.tight_layout()
-    plt.subplot_tool()
-    plt.show()
-    #plt.savefig(outdir+output_file)
+    plt.savefig(outdir+output_file)
