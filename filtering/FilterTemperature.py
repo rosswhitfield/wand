@@ -1,20 +1,21 @@
 from mantid.simpleapi import *
 
 name = 'output'
-IPTS = 19834
-run = 122687
+IPTS = 20325
+run = 26563
 background = None
 BackgroundScale = 1
-vanadium = 101567 # Run number or `None`
+vanadium = 7553 # Run number or `None`
 vanadium_IPTS = 7776
 normaliseBy='Monitor' # One on (None, Monitor, Time)
 units = 'Theta' # One of (Theta, ElasticQ, ElasticDSpacing)
 Binning = '3,123,1200' # Min,Max,Number_of_bins
 
-# Time filter options
-TimeInterval = 3600
-StartTime = None
-StopTime = None
+# Temperature filter options
+LogName = 'HB2C:SE:SampleTemp'
+LogValueInterval = 100
+MinimumLogValue = None
+MaximumLogValue = None
 
 ###############################################################################
 
@@ -41,11 +42,10 @@ if ws not in mtd:
     # Mask detectors to be the same as vanadium
     MaskDetectors(ws, MaskedWorkspace=vanadium_ws)
 
-
 # Filter events
 
-GenerateEventsFilter(InputWorkspace=ws, OutputWorkspace='filter', InformationWorkspace='info',
-                     TimeInterval=TimeInterval, StartTime=StartTime, StopTime=StopTime)
+GenerateEventsFilter(InputWorkspace=ws, OutputWorkspace='filter', InformationWorkspace='info', LogName=LogName,
+                     LogValueInterval=LogValueInterval, MinimumLogValue=MinimumLogValue, MaximumLogValue=MaximumLogValue)
 FilterEvents(InputWorkspace=ws, SplitterWorkspace='filter', OutputWorkspaceBaseName=ws+'_filtered', InformationWorkspace='info',
              GroupWorkspaces=True,FilterByPulseTime=True,OutputWorkspaceIndexedFrom1=True)
 FilterEvents(InputWorkspace=ws+'_monitors', SplitterWorkspace='filter', OutputWorkspaceBaseName=ws+'_filtered_mon', InformationWorkspace='info',
@@ -55,6 +55,7 @@ FilterEvents(InputWorkspace=ws+'_monitors', SplitterWorkspace='filter', OutputWo
 for n in range(mtd[ws+'_filtered'].getNumberOfEntries()):
     AddSampleLog(mtd[ws+'_filtered'].getItem(n), LogName="gd_prtn_chrg",
                  LogType='Number', NumberType='Double',LogText=str(mtd[ws+'_filtered_mon'].getItem(n).getNumberEvents()))
+
 
 # Run powder diffraction reduction
 xmin, xmax, bins = Binning.split(',')
