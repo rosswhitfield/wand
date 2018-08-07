@@ -2,7 +2,10 @@
 import os
 import sys
 import h5py
-from postprocessing.publish_plot import publish_plot
+try:
+    from postprocessing.publish_plot import publish_plot, plot_heatmap
+except ImportError:
+    from finddata import publish_plot
 
 filename = sys.argv[1]
 output_file = os.path.split(filename)[-1].replace('.nxs.h5', '')
@@ -34,16 +37,15 @@ if powder:
 
 else:  # Single Crystal
 
-    import matplotlib as mpl
-    mpl.use("agg")
-    import matplotlib.pyplot as plt
-    from matplotlib.image import imsave
+    from plotly.offline import plot
+    import plotly.graph_objs as go
     import numpy as np
     with h5py.File(filename, 'r') as f:
         offset = f['/entry/DASlogs/HB2C:Mot:s2.RBV/average_value'].value[0]
         title = f['/entry/title'].value[0]
         mon = f['/entry/monitor1/total_counts'].value[0]
         duration = f['/entry/duration'].value[0]
+        run_number = f['/entry/run_number'].value[0]
         bc = np.zeros((512*480*8))
         for b in range(8):
             bc += np.bincount(f['/entry/bank'+str(b+1)+'_events/event_id'].value,
@@ -57,20 +59,7 @@ else:  # Single Crystal
     vanadium = np.load('/HFIR/HB2C/shared/autoreduce/vanadium_101567.npy')
     vanadium_mon = 163519902
     bc = bc / vanadium * vanadium_mon / mon
-    """
-    f, (ax2) = plt.subplots(1, figsize=(8, 3))
-    ax1.set_title(u'{}, {}, s2={:.2f}, duration={:.1f}s'.format(title, output_file, offset, duration))
-    ax1.plot(np.linspace(offset, 120+offset, 960), bc.sum(1)[::-1])
-    ax1.set_xlim(offset, 120+offset)
-    plt.setp(ax1.get_xticklabels(), visible=False)
-    im = ax2.imshow(bc.T[:, ::-1], cmap='viridis', aspect=1/7.5, extent=(offset, 120+offset, 0, 128))
-    ax2.set_xlabel(u'2theta')
-    ax2.set_xlim(120+offset, offset)
-    ax2.set_ylim(0, 128)
-    ax2.get_yaxis().set_visible(False)
-    cb = f.colorbar(im)
-    ax2.set_aspect('auto')
-    f.tight_layout()
-    plt.savefig(outdir+output_file)
-    """
-    imsave(outdir+output_file, bc.T, cmap='viridis')
+
+    plot_heatmap(run_number,
+                 np.linspace(120+offset,offset,960), np.arange(0,128), bc.T,
+                 x_title=u'2theta', instrument='HB2C')
