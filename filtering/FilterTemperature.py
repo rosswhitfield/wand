@@ -62,6 +62,6 @@ xmin, xmax, bins = Binning.split(',')
 WANDPowderReduction(ws+'_filtered',
                     CalibrationWorkspace=vanadium_ws,
                     BackgroundWorkspace=background_ws, BackgroundScale=BackgroundScale,
-                    XMin=xmin, XMax=xmax, NumberBins=bins,
+                    XMin=xmin, XMax=xmax, NumberBins=bins, Target=units,
                     NormaliseBy=normaliseBy,
                     OutputWorkspace=name)
