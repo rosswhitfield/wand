@@ -5,7 +5,7 @@ import re
 if 'data' in mtd:
     DeleteWorkspace('data')
 
-for run in range(95409, 98459, 61):
+for run in range(95409, 98459, 1):
     ws = LoadWAND(IPTS=21442,RunNumbers=run,Grouping='4x4')
     ub = np.array(re.findall(r'-?\d+\.*\d*', ws.run().getProperty('HB2C:CS:CrystalAlign:UBMatrix').value[0]),
                   dtype=np.float).reshape(3,3)
@@ -24,7 +24,9 @@ for run in range(95409, 98459, 61):
                      dEAnalysisMode='Elastic',
                      Q3DFrames='HKL',
                      QConversionScales='HKL',
-                     OtherDimensions='HB2C:SE:SampleTemp')
+                     OtherDimensions='HB2C:SE:SampleTemp',
+                     MinValues='-10,-10,-10,0',
+                     MaxValues='10,10,10,30')
     if 'data' in mtd:
         PlusMD(LHSWorkspace='data',
                RHSWorkspace='md',
@@ -32,3 +34,10 @@ for run in range(95409, 98459, 61):
     else:
         CloneMDWorkspace(InputWorkspace='md',
                          OutputWorkspace='data')
+
+BinMD(InputWorkspace='data',
+      AlignedDim0='[H,0,0],-1,3,200',
+      AlignedDim1='[0,K,0],0,3,150',
+      AlignedDim2='[0,0,L],-1,3,40',
+      AlignedDim3='HB2C:SE:SampleTemp,0,30,10',
+      OutputWorkspace='bin')
