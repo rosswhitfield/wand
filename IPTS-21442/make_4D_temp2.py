@@ -1,12 +1,16 @@
+from mantid.simpleapi import LoadWAND, SetUB, ConvertToMD, PlusMD, mtd, DeleteWorkspace, CloneMDWorkspace
 import numpy as np
 import re
 
+if 'data' in mtd:
+    DeleteWorkspace('data')
+
 for run in range(95409, 98459, 61):
-    ws = LoadWAND(IPTS=21442,RunNumber=run,Grouping='4x4')
+    ws = LoadWAND(IPTS=21442,RunNumbers=run,Grouping='4x4')
     ub = np.array(re.findall(r'-?\d+\.*\d*', ws.run().getProperty('HB2C:CS:CrystalAlign:UBMatrix').value[0]),
                   dtype=np.float).reshape(3,3)
-    sgl = np.deg2rad(_tmp_ws.run().getProperty('HB2C:Mot:sgl.RBV').value[0]) # 'HB2C:Mot:sgl.RBV,1,0,0,-1'
-    sgu = np.deg2rad(_tmp_ws.run().getProperty('HB2C:Mot:sgu.RBV').value[0]) # 'HB2C:Mot:sgu.RBV,0,0,1,-1'
+    sgl = np.deg2rad(ws.run().getProperty('HB2C:Mot:sgl.RBV').value[0]) # 'HB2C:Mot:sgl.RBV,1,0,0,-1'
+    sgu = np.deg2rad(ws.run().getProperty('HB2C:Mot:sgu.RBV').value[0]) # 'HB2C:Mot:sgu.RBV,0,0,1,-1'
     sgl_a = np.array([[           1,            0,           0],
                       [           0,  np.cos(sgl), np.sin(sgl)],
                       [           0, -np.sin(sgl), np.cos(sgl)]])
@@ -21,4 +25,10 @@ for run in range(95409, 98459, 61):
                      Q3DFrames='HKL',
                      QConversionScales='HKL',
                      OtherDimensions='HB2C:SE:SampleTemp')
-    
+    if 'data' in mtd:
+        PlusMD(LHSWorkspace='data',
+               RHSWorkspace='md',
+               OutputWorkspace='data')
+    else:
+        CloneMDWorkspace(InputWorkspace='md',
+                         OutputWorkspace='data')
