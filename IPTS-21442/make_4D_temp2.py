@@ -1,0 +1,17 @@
+import numpy as np
+import re
+
+for run in range(95409, 98458):
+    ws=LoadWAND(IPTS=21442,RunNumber=run,Grouping='4x4')
+    ub = np.array(re.findall(r'-?\d+\.*\d*', ws.run().getProperty('HB2C:CS:CrystalAlign:UBMatrix').value[0]),
+                  dtype=np.float).reshape(3,3)
+    sgl = np.deg2rad(_tmp_ws.run().getProperty('HB2C:Mot:sgl.RBV').value[0]) # 'HB2C:Mot:sgl.RBV,1,0,0,-1'
+    sgu = np.deg2rad(_tmp_ws.run().getProperty('HB2C:Mot:sgu.RBV').value[0]) # 'HB2C:Mot:sgu.RBV,0,0,1,-1'
+    sgl_a = np.array([[           1,            0,           0],
+                      [           0,  np.cos(sgl), np.sin(sgl)],
+                      [           0, -np.sin(sgl), np.cos(sgl)]])
+    sgu_a = np.array([[ np.cos(sgu),  np.sin(sgu),           0],
+                      [-np.sin(sgu),  np.cos(sgu),           0],
+                      [           0,            0,           1]])
+    UB = sgl_a.dot(sgu_a).dot(ub) # Apply the Goniometer tilts to the UB matrix
+    
