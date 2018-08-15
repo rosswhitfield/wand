@@ -22,11 +22,16 @@ with h5py.File(filename, 'r') as f:
 if powder:
 
     sys.path.append("/opt/mantidnightly/bin")
-    from mantid.simpleapi import LoadWAND, WANDPowderReduction, SavePlot1D
+    from mantid.simpleapi import LoadWAND, WANDPowderReduction, SavePlot1D, LoadNexus
 
-    data = LoadWAND(filename)
+    data = LoadWAND(filename, Grouping='4x4')
     runNumber = data.getRunNumber()
-    cal = LoadWAND(IPTS=7776, RunNumbers=101567)
+    van = 101567
+    """
+    cal = LoadWAND(IPTS=7776, RunNumbers=van, Grouping='4x4')
+    SaveNexus(cal, '/HFIR/HB2C/shared/autoreduce/HB2C_{}.nxs'.format(van))
+    """
+    cal = LoadNexus('/HFIR/HB2C/shared/autoreduce/HB2C_{}.nxs'.format(van))
     WANDPowderReduction(InputWorkspace=data,
                         CalibrationWorkspace=cal,
                         Target='Theta',
