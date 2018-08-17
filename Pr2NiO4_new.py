@@ -27,3 +27,10 @@ twotheta = table.column(2)
 azimuthal = table.column(3)
 data.getExperimentInfo(0).run().addProperty('twotheta', twotheta, True)
 data.getExperimentInfo(0).run().addProperty('azimuthal', azimuthal, True)
+
+
+ConvertWANDSCDtoQ(InputWorkspace='data', NormaliseBy='None', KeepTemporaryWorkspaces=True, OutputWorkspace='q', BinningDim0='-8.01,8.01,801', BinningDim1='-0.81,0.81,81',BinningDim2='-8.01,8.01,801')
+
+FindPeaksMD(InputWorkspace='q_data', PeakDistanceThreshold=1, MaxPeaks=100, DensityThresholdFactor=500, CalculateGoniometerForCW=True, Wavelength=1.488, OutputWorkspace='peaks')
+
+FindUBUsingLatticeParameters('peaks',5.414,5.414,12.457,90,90,90)
