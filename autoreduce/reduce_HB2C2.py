@@ -18,11 +18,15 @@ with h5py.File(filename, 'r') as f:
         nature = f['/entry/DASlogs/HB2C:CS:ITEMS:Nature/value'].value[0][0]
         if nature == 'Powder':
             powder = True
+    if '/entry/notes' in f:
+        notes = f['/entry/notes'].value[0].tostring().lower()
+        if 'powder' in notes:
+            powder = True
 
 if powder:
 
     sys.path.append("/opt/mantidnightly/bin")
-    from mantid.simpleapi import LoadWAND, WANDPowderReduction, SavePlot1D, LoadNexus
+    from mantid.simpleapi import LoadWAND, WANDPowderReduction, SavePlot1D, LoadNexus, SaveFocusedXYE
 
     data = LoadWAND(filename, Grouping='4x4')
     runNumber = data.getRunNumber()
@@ -37,6 +41,7 @@ if powder:
                         Target='Theta',
                         NumberBins=1000,
                         OutputWorkspace='reduced')
+    SaveFocusedXYE('reduced', Filename=os.path.join(outdir,output_file+'.xye'), SplitFiles=False, IncludeHeader=False)
     div = SavePlot1D('reduced', OutputType='plotly')
     request = publish_plot('HB2C', runNumber, files={'file': div})
 
