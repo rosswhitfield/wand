@@ -6,3 +6,7 @@ PredictPeaks(InputWorkspace='q', CalculateGoniometerForCW=True, Wavelength=1.488
 IntegratePeaksUsingClusters(InputWorkspace='q2', PeaksWorkspace='predict', Threshold=25000, OutputWorkspace='integrated', OutputWorkspaceMD='labeled')
 SaveHKL('integrated', Filename='/SNS/users/rwp/wand/integration/file.hkl')
 SaveReflections('integrated', Filename='/SNS/users/rwp/wand/integration/peaks.hkl')
+
+
+
+q=LoadMD('/SNS/users/rwp/Er2Ge2O7_q.nxs')
