@@ -34,5 +34,3 @@ IntegratePeaksMDHKL(InputWorkspace='hkl', PeaksWorkspace='peaks', OutputWorkspac
 hkl2=ConvertWANDSCDtoQ(InputWorkspace='KCl', NormalisationWorkspace='Vana_26613', UBWorkspace='peaks2', Frame='HKL',BinningDim0='-1.21,0.41,81',BinningDim1='-8.01,8.01,801',BinningDim2='-8.01,8.01,801')
 
 IntegratePeaksMDHKL(InputWorkspace='hkl2', PeaksWorkspace='peaks2', OutputWorkspace='hkl_integrated2', DeltaHKL=0.5, NeighborPoints=10)
-IntegratePeaksMDHKL(InputWorkspace='hkl2', PeaksWorkspace='peaks2', OutputWorkspace='hkl_integrated2_0.8', DeltaHKL=0.8, NeighborPoints=10)
-IntegratePeaksMDHKL(InputWorkspace='hkl2', PeaksWorkspace='peaks2', OutputWorkspace='hkl_integrated2_1.2', DeltaHKL=1.0, NeighborPoints=10)
