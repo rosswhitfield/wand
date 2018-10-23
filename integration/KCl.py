@@ -28,12 +28,11 @@ IntegratePeaksUsingClusters(InputWorkspace='q2', PeaksWorkspace='peaks2', Thresh
 
 hkl=ConvertWANDSCDtoQ(InputWorkspace='KCl', NormalisationWorkspace='Vana_26613', UBWorkspace='peaks', Frame='HKL',BinningDim0='-1.22,0.42,41',BinningDim1='-8.02,8.02,401',BinningDim2='-8.02,8.02,401')
 
-IntegratePeaksMDHKL(InputWorkspace='hkl', PeaksWorkspace='peaks', OutputWorkspace='hkl_integrated', DeltaHKL=0.5, GridPoints=201, NeighborPoints=10)
-IntegratePeaksMDHKL(InputWorkspace='hkl', PeaksWorkspace='peaks', OutputWorkspace='hkl_integrated2', DeltaHKL=0.5, GridPoints=201, NeighborPoints=2)
-IntegratePeaksMDHKL(InputWorkspace='hkl', PeaksWorkspace='peaks', OutputWorkspace='hkl_integrated3', DeltaHKL=0.5, GridPoints=201, NeighborPoints=5)
-IntegratePeaksMDHKL(InputWorkspace='hkl', PeaksWorkspace='peaks', OutputWorkspace='hkl_integrated4', DeltaHKL=0.5, GridPoints=201, NeighborPoints=1)
-IntegratePeaksMDHKL(InputWorkspace='hkl', PeaksWorkspace='peaks', OutputWorkspace='hkl_integrated5', DeltaHKL=0.5, GridPoints=201, NeighborPoints=20)
+IntegratePeaksMDHKL(InputWorkspace='hkl', PeaksWorkspace='peaks', OutputWorkspace='hkl_integrated', DeltaHKL=0.5, NeighborPoints=10)
 
 
-hkl2=ConvertWANDSCDtoQ(InputWorkspace='KCl', NormalisationWorkspace='Vana_26613', UBWorkspace='peaks2', Frame='HKL',BinningDim0='-0.81,0.81,81',BinningDim1='-8.01,8.01,801',BinningDim2='-8.01,8.01,801')
+hkl2=ConvertWANDSCDtoQ(InputWorkspace='KCl', NormalisationWorkspace='Vana_26613', UBWorkspace='peaks2', Frame='HKL',BinningDim0='-1.21,0.41,81',BinningDim1='-8.01,8.01,801',BinningDim2='-8.01,8.01,801')
 
+IntegratePeaksMDHKL(InputWorkspace='hkl2', PeaksWorkspace='peaks2', OutputWorkspace='hkl_integrated2', DeltaHKL=0.5, NeighborPoints=10)
+IntegratePeaksMDHKL(InputWorkspace='hkl2', PeaksWorkspace='peaks2', OutputWorkspace='hkl_integrated2_0.8', DeltaHKL=0.8, NeighborPoints=10)
+IntegratePeaksMDHKL(InputWorkspace='hkl2', PeaksWorkspace='peaks2', OutputWorkspace='hkl_integrated2_1.2', DeltaHKL=1.0, NeighborPoints=10)
