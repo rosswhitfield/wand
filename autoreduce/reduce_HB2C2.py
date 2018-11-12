@@ -36,7 +36,7 @@ def get_vanadium(run_number, npy=False):
     upstream_van_file = '/HFIR/HB2C/shared/Vanadium/HB2C_{}.nxs.h5'.format(van_run_number)
     if npy:
         npy_van_file = '/HFIR/HB2C/shared/autoreduce/vanadium/HB2C_{}.npy'.format(van_run_number)
-        if os.path.exist(npy_van_file):
+        if os.path.exists(npy_van_file):
             return np.load(npy_van_file)
         else:
             with h5py.File(upstream_van_file, 'r') as f:
@@ -54,18 +54,18 @@ def get_vanadium(run_number, npy=False):
     else:
         from mantid.simpleapi import LoadWAND, LoadNexus, SaveNexus
         nxs_van_file = '/HFIR/HB2C/shared/autoreduce/vanadium/HB2C_{}.nxs'.format(van_run_number)
-        if os.path.exist(nxs_van_file):
+        if os.path.exists(nxs_van_file):
             ws = LoadNexus(nxs_van_file)
         else:
             ws = LoadWAND(upstream_van_file, Grouping='4x4')
-            SaveNexus(cal, nxs_van_file)
+            SaveNexus(ws, nxs_van_file)
         return ws
 
 
 if powder:
 
     sys.path.append("/opt/mantidnightly/bin")
-    from mantid.simpleapi import LoadWAND, WANDPowderReduction, SavePlot1D, SaveFocusedXYE
+    from mantid.simpleapi import LoadWAND, WANDPowderReduction, SavePlot1D, SaveFocusedXYE, Scale
 
     data = LoadWAND(filename, Grouping='4x4')
     runNumber = data.getRunNumber()
@@ -75,6 +75,7 @@ if powder:
                         Target='Theta',
                         NumberBins=1200,
                         OutputWorkspace='reduced')
+    Scale(InputWorkspace='reduced',OutputWorkspace='reduced',Factor=100)
     SaveFocusedXYE('reduced', Filename=os.path.join(outdir, output_file+'.xye'), SplitFiles=False, IncludeHeader=False)
     div = SavePlot1D('reduced', OutputType='plotly')
     request = publish_plot('HB2C', runNumber, files={'file': div})
