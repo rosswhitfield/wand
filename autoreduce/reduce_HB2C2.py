@@ -2,6 +2,7 @@
 import os
 import sys
 import h5py
+import numpy as np
 try:
     from postprocessing.publish_plot import publish_plot, plot_heatmap
 except ImportError:
@@ -23,33 +24,63 @@ with h5py.File(filename, 'r') as f:
         if 'powder' in notes:
             powder = True
 
+
+def get_vanadium(run_number, npy=False):
+    """
+    Pre-process vanadium only the first time it's used
+    """
+    vanadiums = sorted(int(n.replace('HB2C_', '').replace('.nxs.h5', ''))
+                       for n in os.listdir('/HFIR/HB2C/shared/Vanadium')
+                       if 'HB2C_' in n and '.nxs.h5' in n)
+    van_run_number = vanadiums[np.searchsorted(vanadiums, run_number, side='right')-1]
+    upstream_van_file = '/HFIR/HB2C/shared/Vanadium/HB2C_{}.nxs.h5'.format(van_run_number)
+    if npy:
+        npy_van_file = '/HFIR/HB2C/shared/autoreduce/vanadium/HB2C_{}.npy'.format(van_run_number)
+        if os.path.exist(npy_van_file):
+            return np.load(npy_van_file)
+        else:
+            with h5py.File(upstream_van_file, 'r') as f:
+                bc = np.zeros((512*480*8))
+                for b in range(8):
+                    bc += np.bincount(f['/entry/bank'+str(b+1)+'_events/event_id'].value,
+                                      minlength=512*480*8)
+                bc = bc.reshape((480*8, 512))
+                bc = (bc[::4, ::4] + bc[1::4, ::4] + bc[2::4, ::4] + bc[3::4, ::4]
+                      + bc[::4, 1::4] + bc[1::4, 1::4] + bc[2::4, 1::4] + bc[3::4, 1::4]
+                      + bc[::4, 2::4] + bc[1::4, 2::4] + bc[2::4, 2::4] + bc[3::4, 2::4]
+                      + bc[::4, 3::4] + bc[1::4, 3::4] + bc[2::4, 3::4] + bc[3::4, 3::4])
+            np.save(npy_van_file, bc)
+            return bc
+    else:
+        from mantid.simpleapi import LoadWAND, LoadNexus, SaveNexus
+        nxs_van_file = '/HFIR/HB2C/shared/autoreduce/vanadium/HB2C_{}.nxs'.format(van_run_number)
+        if os.path.exist(nxs_van_file):
+            ws = LoadNexus(nxs_van_file)
+        else:
+            ws = LoadWAND(upstream_van_file, Grouping='4x4')
+            SaveNexus(cal, nxs_van_file)
+        return ws
+
+
 if powder:
 
     sys.path.append("/opt/mantidnightly/bin")
-    from mantid.simpleapi import LoadWAND, WANDPowderReduction, SavePlot1D, LoadNexus, SaveFocusedXYE
+    from mantid.simpleapi import LoadWAND, WANDPowderReduction, SavePlot1D, SaveFocusedXYE
 
     data = LoadWAND(filename, Grouping='4x4')
     runNumber = data.getRunNumber()
-    van = 101567
-    """
-    cal = LoadWAND(IPTS=7776, RunNumbers=van, Grouping='4x4')
-    SaveNexus(cal, '/HFIR/HB2C/shared/autoreduce/HB2C_{}.nxs'.format(van))
-    """
-    cal = LoadNexus('/HFIR/HB2C/shared/autoreduce/HB2C_{}.nxs'.format(van))
+    cal = get_vanadium(runNumber)
     WANDPowderReduction(InputWorkspace=data,
                         CalibrationWorkspace=cal,
                         Target='Theta',
-                        NumberBins=1000,
+                        NumberBins=1200,
                         OutputWorkspace='reduced')
-    SaveFocusedXYE('reduced', Filename=os.path.join(outdir,output_file+'.xye'), SplitFiles=False, IncludeHeader=False)
+    SaveFocusedXYE('reduced', Filename=os.path.join(outdir, output_file+'.xye'), SplitFiles=False, IncludeHeader=False)
     div = SavePlot1D('reduced', OutputType='plotly')
     request = publish_plot('HB2C', runNumber, files={'file': div})
 
 else:  # Single Crystal
 
-    from plotly.offline import plot
-    import plotly.graph_objs as go
-    import numpy as np
     with h5py.File(filename, 'r') as f:
         offset = f['/entry/DASlogs/HB2C:Mot:s2.RBV/average_value'].value[0]
         title = f['/entry/title'].value[0]
@@ -66,10 +97,10 @@ else:  # Single Crystal
               + bc[::4, 2::4] + bc[1::4, 2::4] + bc[2::4, 2::4] + bc[3::4, 2::4]
               + bc[::4, 3::4] + bc[1::4, 3::4] + bc[2::4, 3::4] + bc[3::4, 3::4])
 
-    vanadium = np.load('/HFIR/HB2C/shared/autoreduce/vanadium_101567.npy')
-    vanadium_mon = 163519902
+    vanadium = get_vanadium(run_number, npy=True)
+    vanadium_mon = 163519902  # ?
     bc = bc / vanadium * vanadium_mon / mon
 
     plot_heatmap(run_number,
-                 np.linspace(120+offset,offset,960), np.arange(0,128), bc.T,
+                 np.linspace(120+offset, offset, 960), np.arange(0, 128), bc.T,
                  x_title=u'2theta', instrument='HB2C')
