@@ -14,3 +14,9 @@ for ws in grp:
 for ws in grp:
     SaveFocusedXYE(ws, SplitFiles=False, IncludeHeader=False,
                    Filename='{}-{}.xye'.format(ws.getRunNumber(), ws.getTitle()))
+
+# Save by average log value
+logName = "HB2C:SE:SampleTemp"
+for ws in grp:
+    SaveFocusedXYE(ws, SplitFiles=False, IncludeHeader=False,
+                   Filename='{}-{}.xye'.format(ws.getRunNumber(), ws.getRun().getLogData(logName).timeAverageValue()))
