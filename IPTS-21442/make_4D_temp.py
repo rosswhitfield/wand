@@ -21,5 +21,10 @@ for n, t in enumerate(range(5,30)):
     signal[:,:,:,n]=mtd['{}K'.format(t)].getSignalArray()
 
 output.setSignalArray(signal)
+
+SaveMD(output,'/SNS/users/rwp/wand/IPTS-21442/skyrmion_4D.nxs')
+SaveMDWorkspaceToVTK('output','/SNS/users/rwp/wand/IPTS-21442/skyrmion_4D.vts')
     
 SliceMDHisto(InputWorkspace='output', Start='10,10,10,0', End='51,51,11,25', OutputWorkspace='slice')
+SaveMD('slice','/SNS/users/rwp/wand/IPTS-21442/skyrmion_3D.nxs')
+SaveMDWorkspaceToVTK('slice','/SNS/users/rwp/wand/IPTS-21442/skyrmion_3D.vts')
