@@ -1,6 +1,6 @@
 import numpy as np
 
-for t in range(5,7):
+for t in range(5,30):
     runNumbers='{}-{}'.format(95409+122*(t-5),95530+122*(t-5))
     print(t,runNumbers)
     LoadWANDSCD(IPTS=21442, RunNumbers=runNumbers, OutputWorkspace='data_{}K'.format(t))
@@ -12,11 +12,11 @@ for t in range(5,7):
                       OutputWorkspace='{}K'.format(t))
     DeleteWorkspace('data_{}K'.format(t))
 
-output=CreateMDHistoWorkspace(4, SignalInput=[0]*61*61*21*25, ErrorInput=[0]*61*61*21*25,
+output=CreateMDHistoWorkspace(4, SignalInput=[0]*101*101*51*25, ErrorInput=[0]*101*101*51*25,
                               Extents=[-0.1525,0.1525,0.8475,1.1525,-0.025,1.025,4.5,29.5],
-                              NumberOfBins=[61, 61, 21, 25], Names=['[H,0,0]','[0,K,0]','[0,0,L]','temperature'], Units='A^-1,A^-1,A^-1,C')
+                              NumberOfBins=[101, 101, 51, 25], Names=['[H,0,0]','[0,K,0]','[0,0,L]','temperature'], Units='A^-1,A^-1,A^-1,C')
 
-signal=np.empty((61,61,21,25))
+signal=np.empty((101,101,51,25))
 for n, t in enumerate(range(5,30)):
     signal[:,:,:,n]=mtd['{}K'.format(t)].getSignalArray()
 
