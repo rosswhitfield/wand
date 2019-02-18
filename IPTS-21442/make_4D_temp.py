@@ -23,8 +23,17 @@ for n, t in enumerate(range(5,30)):
 output.setSignalArray(signal)
 
 SaveMD(output,'/SNS/users/rwp/wand/IPTS-21442/skyrmion_4D.nxs')
-SaveMDWorkspaceToVTK('output','/SNS/users/rwp/wand/IPTS-21442/skyrmion_4D.vts')
-    
-SliceMDHisto(InputWorkspace='output', Start='10,10,10,0', End='51,51,11,25', OutputWorkspace='slice')
-SaveMD('slice','/SNS/users/rwp/wand/IPTS-21442/skyrmion_3D.nxs')
-SaveMDWorkspaceToVTK('slice','/SNS/users/rwp/wand/IPTS-21442/skyrmion_3D.vts')
+#output=LoadMD('/SNS/users/rwp/wand/IPTS-21442/skyrmion_4D.nxs')
+#SaveMDWorkspaceToVTK('output','/SNS/users/rwp/wand/IPTS-21442/skyrmion_4D.vts')
+for n in range(output.getDimension(3).getNBins()):
+    T=(output.getDimension(3).getX(n)+output.getDimension(3).getX(n+1))/2
+    #SliceMDHisto(InputWorkspace='output', Start='10,10,0,{}'.format(n), End='51,51,21,{}'.format(n+1), OutputWorkspace='slice')
+    IntegrateMDHistoWorkspace('output', P1Bin='-0.1,0,0.1',P2Bin='0.9,0,1.1',P4Bin='{},{}'.format(T-0.5,T+0.5), OutputWorkspace='slice')
+    SaveMD('slice','/SNS/users/rwp/wand/IPTS-21442/skyrmion_{}K.nxs'.format(int(T)))
+    SaveMDWorkspaceToVTK('slice','/SNS/users/rwp/wand/IPTS-21442/skyrmion_{}K.vts'.format(int(T)))
+
+# 3D - 2D+T
+#SliceMDHisto(InputWorkspace='output', Start='10,10,10,0', End='51,51,11,25', OutputWorkspace='slice')
+IntegrateMDHistoWorkspace('output', P1Bin='-0.1,0,0.1',P2Bin='0.9,0,1.1',P3Bin='0.35,0.65', OutputWorkspace='slice')
+SaveMD('slice','/SNS/users/rwp/wand/IPTS-21442/skyrmion_3D_T.nxs')
+SaveMDWorkspaceToVTK('slice','/SNS/users/rwp/wand/IPTS-21442/skyrmion_3D_T.vts')
