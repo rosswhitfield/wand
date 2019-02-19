@@ -8,5 +8,5 @@ for filename in filenames:
     _, x, _, y, _, z = vts.GetDataInformation().DataInformation.GetExtent()
     print(x,y,z)
     resampleToImage = ResampleToImage(Input=vts)
-    resampleToImage.SamplingDimensions = [x, y, z]
+    resampleToImage.SamplingDimensions = [x+1, y+1, z+1]
     SaveData(filename.replace('vts','vti'), proxy=resampleToImage)
