@@ -1,4 +1,4 @@
-ws=mtd['data']
+workspace_name = 'data'
 
 Uproj = [1, 0, 0]
 Vproj = [0, 1, 0]
@@ -10,9 +10,10 @@ wavelength = 1.488
 
 import numpy as np
 
+ws=mtd[workspace_name]
 s1 = np.deg2rad(ws.getExperimentInfo(0).run().getProperty('s1').value)
-polar = np.array(ws.getExperimentInfo(0).run().getProperty('twotheta').value)
-azim = np.array(ws.getExperimentInfo(0).run().getProperty('azimuthal').value)
+polar = np.array(ws.getExperimentInfo(0).run().getProperty('twotheta').value)[::64]
+azim = np.array(ws.getExperimentInfo(0).run().getProperty('azimuthal').value)[::64]
 UB = ws.getExperimentInfo(0).sample().getOrientedLattice().getUB()
 
 k = 1/wavelength
@@ -31,6 +32,8 @@ UBW = np.dot(UB, W)
 HKL_min = np.array([1e9,1e9,1e9])
 HKL_max = np.array([-1e9,-1e9,-1e9])
 
+t1=time.time()
+
 for rot in s1:
     R = np.array([[ np.cos(rot), 0, np.sin(rot)],
                   [           0, 1,           0],
@@ -40,6 +43,7 @@ for rot in s1:
     HKL_min = np.minimum(HKL_min, HKL.min(axis=1))
     HKL_max = np.maximum(HKL_max, HKL.max(axis=1))
 
+t2=time.time()
 fmt = '{:>12} min: {: .4f} max: {: .4f}'
 print(fmt.format(str(Uproj), HKL_min[0], HKL_max[0]))
 print(fmt.format(str(Vproj), HKL_min[1], HKL_max[1]))
