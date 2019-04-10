@@ -1,12 +1,17 @@
+ws=mtd['data']
+
 Uproj = [1, 0, 0]
 Vproj = [0, 1, 0]
 Wproj = [0, 0, 1]
 
-ws=mtd['data']
-
 wavelength = 1.488
 
+BinWidth0=0.04
+BinWidth1=0.04
+BinWidth2=0.04
+
 ################################################################################
+
 import numpy as np
 
 s1 = np.deg2rad(ws.getExperimentInfo(0).run().getProperty('s1').value)
@@ -27,7 +32,6 @@ W[:,2] = Wproj
 
 UBW = np.dot(UB, W)
 
-
 HKL_min = np.array([1e9,1e9,1e9])
 HKL_max = np.array([-1e9,-1e9,-1e9])
 
@@ -40,5 +44,7 @@ for rot in s1:
     HKL_min = np.minimum(HKL_min, HKL.min(axis=1))
     HKL_max = np.maximum(HKL_max, HKL.max(axis=1))
 
-print(HKL_min)
-print(HKL_max)
+print('{:>12} min:max:bins')
+print('{:>12} {: .4}:{: .4}'.format(str(Uproj), HKL_min[0], HKL_max[0]))
+print('{:>12} {: .4}:{: .4}'.format(str(Vproj), HKL_min[1], HKL_max[1]))
+print('{:>12} {: .4}:{: .4}'.format(str(Wproj), HKL_min[2], HKL_max[2]))
