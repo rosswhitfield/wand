@@ -6,10 +6,6 @@ Wproj = [0, 0, 1]
 
 wavelength = 1.488
 
-BinWidth0=0.04
-BinWidth1=0.04
-BinWidth2=0.04
-
 ################################################################################
 
 import numpy as np
@@ -44,7 +40,7 @@ for rot in s1:
     HKL_min = np.minimum(HKL_min, HKL.min(axis=1))
     HKL_max = np.maximum(HKL_max, HKL.max(axis=1))
 
-print('{:>12} min:max:bins')
-print('{:>12} {: .4}:{: .4}'.format(str(Uproj), HKL_min[0], HKL_max[0]))
-print('{:>12} {: .4}:{: .4}'.format(str(Vproj), HKL_min[1], HKL_max[1]))
-print('{:>12} {: .4}:{: .4}'.format(str(Wproj), HKL_min[2], HKL_max[2]))
+fmt = '{:>12} min: {: .4f} max: {: .4f}'
+print(fmt.format(str(Uproj), HKL_min[0], HKL_max[0]))
+print(fmt.format(str(Vproj), HKL_min[1], HKL_max[1]))
+print(fmt.format(str(Wproj), HKL_min[2], HKL_max[2]))
