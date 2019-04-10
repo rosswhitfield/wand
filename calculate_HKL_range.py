@@ -10,8 +10,8 @@ wavelength = 1.488
 import numpy as np
 
 s1 = np.deg2rad(ws.getExperimentInfo(0).run().getProperty('s1').value)
-polar = np.deg2rad(ws.getExperimentInfo(0).run().getProperty('twotheta').value)
-azim = np.deg2rad(ws.getExperimentInfo(0).run().getProperty('azimuthal').value)
+polar = np.array(ws.getExperimentInfo(0).run().getProperty('twotheta').value)
+azim = np.array(ws.getExperimentInfo(0).run().getProperty('azimuthal').value)
 UB = ws.getExperimentInfo(0).sample().getOrientedLattice().getUB()
 
 k = 1/wavelength
