@@ -28,7 +28,8 @@ W[:,2] = Wproj
 UBW = np.dot(UB, W)
 
 
-Umin = 
+HKL_min = np.array([1e9,1e9,1e9])
+HKL_max = np.array([-1e9,-1e9,-1e9])
 
 for rot in s1:
     R = np.array([[ np.cos(rot), 0, np.sin(rot)],
@@ -36,4 +37,8 @@ for rot in s1:
                   [-np.sin(rot), 0, np.cos(rot)]])
     RUBW = np.dot(R,UBW)
     HKL=np.dot(np.linalg.inv(RUBW),qlab.T)
+    HKL_min = np.minimum(HKL_min, HKL.min(axis=1))
+    HKL_max = np.maximum(HKL_max, HKL.max(axis=1))
 
+print(HKL_min)
+print(HKL_max)
