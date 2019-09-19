@@ -10,3 +10,4 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 data = LoadWANDSCD(IPTS=21362, RunNumbers='120754-122554', Grouping='4x4')
+mde=ConvertWANDSCDtoMDE(data)
