@@ -22,3 +22,26 @@ CalculateGoniometerForCW=True,
 Wavelength=1.488, MaxAngle=0,
 CalculateStructureFactors=True,
 OutputWorkspace='predict')
+
+
+FindPeaksMD(InputWorkspace='mde',
+PeakDistanceThreshold=1,
+DensityThresholdFactor=10000,
+CalculateGoniometerForCW=True,
+OutputWorkspace='peaks')
+
+
+FindPeaksMD(InputWorkspace='mde', PeakDistanceThreshold=1, DensityThresholdFactor=10000, CalculateGoniometerForCW=True, OutputWorkspace='peaks')
+IndexPeaks(PeaksWorkspace='peaks')
+OptimizeLatticeForCellType(PeaksWorkspace='peaks', CellType='Hexagonal', Apply=True, OutputDirectory='/home/rwp/build/mantid/.')
+
+PredictPeaks(InputWorkspace='peaks',
+MinDSpacing=0.1,
+CalculateGoniometerForCW=True,
+Wavelength=1.488,
+MaxAngle=0,
+ReflectionCondition='Hexagonally centred, reverse',
+CalculateStructureFactors=True,
+OutputWorkspace='predict2')
+
+
