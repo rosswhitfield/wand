@@ -92,7 +92,15 @@ ol=mtd['peaks2'].sample().getOrientedLattice()
 a=ol.a();
 b=ol.b()
 c=ol.c()
-ol.seta(a*2)
-ol.setb(b*2)
-ol.setc(c*2)
+ol.seta(a*4)
+ol.setb(b*4)
+ol.setc(c*4)
 
+PredictPeaks(InputWorkspace='peaks2',
+MinDSpacing=0.1,
+CalculateGoniometerForCW=True,
+Wavelength=1.488,
+MaxAngle=0,
+ReflectionCondition='Hexagonally centred, reverse',
+CalculateStructureFactors=True,
+OutputWorkspace='predict2')
