@@ -136,7 +136,16 @@ DensityThresholdFactor=10000,
 CalculateGoniometerForCW=True,
 OutputWorkspace='peaks')
 IndexPeaks(PeaksWorkspace='peaks')
-OptimizeLatticeForCellType(PeaksWorkspace='peaks', CellType='Hexagonal', Apply=True, OutputDirectory='/home/rwp/build/mantid/.')
+OptimizeLatticeForCellType(PeaksWorkspace='peaks', CellType='Hexagonal', Apply=True)
+
+ConvertWANDSCDtoQ(InputWorkspace='data',
+                  NormalisationWorkspace='norm',
+                  UBWorkspace='peaks',
+                  Frame='HKL',
+                  OutputWorkspace='HKL',
+                  BinningDim0='-5.01,5.01,501',
+                  BinningDim1='-5.01,5.01,501',
+                  BinningDim2='-0.21,0.81,51')
 
 PredictPeaks(InputWorkspace='peaks',
 MinDSpacing=0.1,
@@ -153,8 +162,8 @@ ol=mtd['peaks'].sample().getOrientedLattice()
 a=ol.a();
 b=ol.b()
 c=ol.c()
-ol.seta(a*2)
-ol.setb(b*2)
+ol.seta(a*4)
+ol.setb(b*4)
 ol.setc(c*4)
 
 PredictPeaks(InputWorkspace='peaks',
