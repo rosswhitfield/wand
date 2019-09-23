@@ -104,3 +104,63 @@ MaxAngle=0,
 ReflectionCondition='Hexagonally centred, reverse',
 CalculateStructureFactors=True,
 OutputWorkspace='predict2')
+
+
+
+
+
+
+
+#####
+
+
+from __future__ import (absolute_import, division, print_function, unicode_literals)
+
+# import mantid algorithms, numpy and matplotlib
+from mantid.simpleapi import *
+
+import matplotlib.pyplot as plt
+
+import numpy as np
+
+data = LoadWANDSCD(IPTS=21362, RunNumbers='120754-122554', Grouping='4x4')
+norm=LoadWANDSCD("HB2C137518", Grouping='4x4')
+mde=ConvertWANDSCDtoMDE(data)
+ConvertWANDSCDtoQ(InputWorkspace='data',
+                  NormalisationWorkspace='norm',
+                  OutputWorkspace='Q',
+                  BinningDim1='-1,1,21')
+FindPeaksMD(InputWorkspace='mde',
+PeakDistanceThreshold=1,
+DensityThresholdFactor=10000,
+CalculateGoniometerForCW=True,
+OutputWorkspace='peaks')
+IndexPeaks(PeaksWorkspace='peaks')
+OptimizeLatticeForCellType(PeaksWorkspace='peaks', CellType='Hexagonal', Apply=True, OutputDirectory='/home/rwp/build/mantid/.')
+
+PredictPeaks(InputWorkspace='peaks',
+MinDSpacing=0.1,
+CalculateGoniometerForCW=True,
+Wavelength=1.488,
+MaxAngle=0,
+ReflectionCondition='Hexagonally centred, reverse',
+CalculateStructureFactors=True,
+OutputWorkspace='predict')
+
+
+
+ol=mtd['peaks'].sample().getOrientedLattice()
+a=ol.a();
+b=ol.b()
+c=ol.c()
+ol.seta(a*2)
+ol.setb(b*2)
+ol.setc(c*4)
+
+PredictPeaks(InputWorkspace='peaks',
+MinDSpacing=0.1,
+CalculateGoniometerForCW=True,
+Wavelength=1.488,
+MaxAngle=0,
+ReflectionCondition='Hexagonally centred, reverse',
+OutputWorkspace='predict2')
