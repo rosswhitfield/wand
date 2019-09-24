@@ -157,19 +157,20 @@ CalculateStructureFactors=True,
 OutputWorkspace='predict')
 
 
-
-ol=mtd['peaks'].sample().getOrientedLattice()
-a=ol.a();
-b=ol.b()
-c=ol.c()
-ol.seta(a*4)
-ol.setb(b*4)
-ol.setc(c*4)
-
-PredictPeaks(InputWorkspace='peaks',
-MinDSpacing=0.1,
+FindPeaksMD(InputWorkspace='mde',
+PeakDistanceThreshold=0.25,
+#DensityThresholdFactor=10000,
 CalculateGoniometerForCW=True,
-Wavelength=1.488,
-MaxAngle=0,
-ReflectionCondition='Hexagonally centred, reverse',
-OutputWorkspace='predict2')
+OutputWorkspace='peaks2')
+FilterPeaks(InputWorkspace='peaks2', OutputWorkspace='peaks2_filtered', FilterVariable='QMod', Operator='>', FilterValue=1.5)
+IndexPeaks(PeaksWorkspace='peaks2', RoundHKLs=False)
+
+
+
+
+LoadWANDSCD(IPTS=21362, RunNumbers='120754-122554', Grouping='4x4', OutputWorkspace='data')
+ConvertWANDSCDtoMDE(InputWorkspace='data', OutputWorkspace='mde')
+FindPeaksMD(InputWorkspace='mde', PeakDistanceThreshold=0.25, CalculateGoniometerForCW=True, OutputWorkspace='peaks2')
+FilterPeaks(InputWorkspace='peaks2', OutputWorkspace='peaks2_filtered', FilterVariable='QMod', FilterValue=1.5, Operator='>')
+FindUBUsingLatticeParameters(PeaksWorkspace='peaks2_filtered', a=4, b=4, c=4, alpha=90, beta=90, gamma=120)
+OptimizeLatticeForCellType(PeaksWorkspace='peaks2_filtered', CellType='Hexagonal', Apply=True)
