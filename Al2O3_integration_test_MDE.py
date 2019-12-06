@@ -10,17 +10,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 data = LoadWANDSCD(IPTS=22745, RunNumbers='147131-148931', Grouping='4x4')
-mde=ConvertWANDSCDtoMDE(data, wavelenght=1.488)
+mde=ConvertSCDtoMDE(data, wavelength=1.488,MinValues='-10,-10,-10',MaxValues='10,10,10')
 
-PredictPeaks(InputWorkspace='Q',
-             MinDSpacing=0.1,
+PredictPeaks(InputWorkspace=data,
+MinDSpacing=0.5,
+ReflectionCondition='Rhombohedrally centred, obverse',
              CalculateGoniometerForCW=True,
-             Wavelength=1.488, MaxAngle=0,
+             Wavelength=1.488, MinAngle=-90,MaxAngle=90,
              CalculateStructureFactors=True,
              OutputWorkspace='predict')
 
-FindPeaksMD(InputWorkspace='mde',
-            PeakDistanceThreshold=1,
-            DensityThresholdFactor=10000,
-            CalculateGoniometerForCW=True,
-            OutputWorkspace='peaks')
+IntegratePeaksMD(InputWorkspace=mde, PeaksWorkspace='predict', PeakRadius=0.5, OutputWorkspace='integrated')
+
+peaks = mtd["integrated"]
+for p in range(peaks.getNumberPeaks()):
+        peak = peaks.getPeak(p)
+        lorentz = np.sin(2*np.arcsin(1.488/(2*peak.getDSpacing())))
+        print("HKL = {:>12} int = {:>8} {:5.1f}".format(str(peak.getHKL()),peak.getIntensity(),peak.getIntensity()*lorentz))
