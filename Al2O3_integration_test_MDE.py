@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-data = LoadWANDSCD(IPTS=22745, RunNumbers='144330-147130', Grouping='4x4')
+data = LoadWANDSCD(IPTS=22745, RunNumbers='147131-148931', Grouping='4x4')
 mde=ConvertWANDSCDtoMDE(data, wavelenght=1.488)
 
 PredictPeaks(InputWorkspace='Q',
