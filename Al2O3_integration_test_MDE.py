@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-data = LoadWANDSCD(IPTS=22745, RunNumbers='147131-148931', Grouping='4x4')
+data = LoadWANDSCD(IPTS=22745, RunNumbers='147131-148931')
 mde = ConvertHFIRSCDtoMDE(data, wavelength=1.488,MinValues='-10,-10,-10',MaxValues='10,10,10')
 
 PredictPeaks(InputWorkspace=data,
@@ -26,7 +26,8 @@ IntegratePeaksMD(InputWorkspace=mde,
                  PeakRadius=0.5,
                  OutputWorkspace='integrated')
 
-peaks = mtd["integrated"]
-for p in range(peaks.getNumberPeaks()):
-        peak = peaks.getPeak(p)
-        print("HKL = {:>12} int = {:>8} {:5.1f}".format(str(peak.getHKL()),peak.getIntensity(),peak.getIntensity()))
+IntegratePeaksMD(InputWorkspace=mde,
+                 PeaksWorkspace='predict',
+                 PeakRadius=0.5,
+                 BackgroundOuterRadius=0.75,
+                 OutputWorkspace='integrated2')
