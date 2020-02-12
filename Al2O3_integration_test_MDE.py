@@ -60,3 +60,26 @@ IntegratePeaksMD(InputWorkspace=mde2,
                  PeakRadius=0.5,
                  BackgroundOuterRadius=0.75,
                  OutputWorkspace='integrated2_bkg')
+
+
+
+
+van = LoadWANDSCD(IPTS=23858, RunNumbers='145309')
+s=data.getSignalArray().copy()
+vans = van.getSignalArray()
+
+s /= vans
+
+data.setSignalArray(s)
+mde_van = ConvertHFIRSCDtoMDE(data, wavelength=1.488,MinValues='-10,-10,-10',MaxValues='10,10,10')
+
+IntegratePeaksMD(InputWorkspace=mde_van,
+                 PeaksWorkspace='predict',
+                 PeakRadius=0.5,
+                 OutputWorkspace='integrated_van')
+
+IntegratePeaksMD(InputWorkspace=mde_van,
+                 PeaksWorkspace='predict',
+                 PeakRadius=0.5,
+                 BackgroundOuterRadius=0.75,
+                 OutputWorkspace='integrated_bkg_van')
