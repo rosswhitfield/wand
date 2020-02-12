@@ -83,3 +83,12 @@ IntegratePeaksMD(InputWorkspace=mde_van,
                  PeakRadius=0.5,
                  BackgroundOuterRadius=0.75,
                  OutputWorkspace='integrated_bkg_van')
+
+peaks = mtd['integrated_van']
+for p in range(peaks.getNumberPeaks()):
+        peak = peaks.getPeak(p)
+        if peak.getL() != 0:
+            continue
+        lorentz = np.sin(2*np.arcsin(1.488/(2*peak.getDSpacing())))
+        print("HKL = {:>12} int = {:>8} {:5.1f}".format(str(peak.getHKL()),peak.getIntensity(),peak.getIntensity()*lorentz))
+
