@@ -9,8 +9,12 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-data = LoadWANDSCD(IPTS=22745, RunNumbers='147131-148931')
+data = LoadWANDSCD(IPTS=22745, RunNumbers='145330-147130')
 mde = ConvertHFIRSCDtoMDE(data, wavelength=1.488,MinValues='-10,-10,-10',MaxValues='10,10,10')
+
+data2 = LoadWANDSCD(IPTS=22745, RunNumbers='147131-148931')
+mde2 = ConvertHFIRSCDtoMDE(data2, wavelength=1.488,MinValues='-10,-10,-10',MaxValues='10,10,10')
+
 
 PredictPeaks(InputWorkspace=data,
              MinDSpacing=0.5,
@@ -30,4 +34,16 @@ IntegratePeaksMD(InputWorkspace=mde,
                  PeaksWorkspace='predict',
                  PeakRadius=0.5,
                  BackgroundOuterRadius=0.75,
+                 OutputWorkspace='integrated_bkg')
+
+
+IntegratePeaksMD(InputWorkspace=mde,
+                 PeaksWorkspace='predict',
+                 PeakRadius=0.5,
                  OutputWorkspace='integrated2')
+
+IntegratePeaksMD(InputWorkspace=mde,
+                 PeaksWorkspace='predict',
+                 PeakRadius=0.5,
+                 BackgroundOuterRadius=0.75,
+                 OutputWorkspace='integrated2_bkg')
