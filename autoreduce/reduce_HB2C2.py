@@ -1,4 +1,5 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
+from __future__ import (absolute_import, division, print_function, unicode_literals)
 import os
 import sys
 import h5py
@@ -6,7 +7,7 @@ import numpy as np
 try:
     from postprocessing.publish_plot import publish_plot, plot_heatmap
 except ImportError:
-    from finddata import publish_plot
+    from finddata import publish_plot, plot_heatmap
 
 filename = sys.argv[1]
 output_file = os.path.split(filename)[-1].replace('.nxs.h5', '')
@@ -64,7 +65,6 @@ def get_vanadium(run_number, npy=False):
 
 if powder:
 
-    sys.path.append("/opt/mantidnightly/bin")
     from mantid.simpleapi import LoadWAND, WANDPowderReduction, SavePlot1D, SaveFocusedXYE, Scale
 
     data = LoadWAND(filename, Grouping='4x4')
