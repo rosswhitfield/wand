@@ -7,21 +7,28 @@ import numpy as np
 try:
     from postprocessing.publish_plot import publish_plot, plot_heatmap
 except ImportError:
-    from finddata import publish_plot, plot_heatmap
+    from finddata.publish_plot import publish_plot, plot_heatmap
 
 filename = sys.argv[1]
 output_file = os.path.split(filename)[-1].replace('.nxs.h5', '')
 outdir = sys.argv[2]
 
+
+def decode(value):
+    try:
+        return value.decode()
+    except:
+        return value
+
 powder = False
 
 with h5py.File(filename, 'r') as f:
     if '/entry/DASlogs/HB2C:CS:ITEMS:Nature' in f:
-        nature = f['/entry/DASlogs/HB2C:CS:ITEMS:Nature/value'].value[0][0]
+        nature = decode(f['/entry/DASlogs/HB2C:CS:ITEMS:Nature/value'].value[0][0])
         if nature == 'Powder':
             powder = True
     if '/entry/notes' in f:
-        notes = f['/entry/notes'].value[0].tostring().lower()
+        notes = decode(f['/entry/notes'].value[0].tostring().lower())
         if 'powder' in notes:
             powder = True
 
@@ -62,7 +69,6 @@ def get_vanadium(run_number, npy=False):
             SaveNexus(ws, nxs_van_file)
         return ws
 
-
 if powder:
 
     from mantid.simpleapi import LoadWAND, WANDPowderReduction, SavePlot1D, SaveFocusedXYE, Scale
@@ -83,11 +89,11 @@ if powder:
 else:  # Single Crystal
 
     with h5py.File(filename, 'r') as f:
-        offset = f['/entry/DASlogs/HB2C:Mot:s2.RBV/average_value'].value[0]
-        title = f['/entry/title'].value[0]
-        mon = f['/entry/monitor1/total_counts'].value[0]
-        duration = f['/entry/duration'].value[0]
-        run_number = f['/entry/run_number'].value[0]
+        offset = decode(f['/entry/DASlogs/HB2C:Mot:s2.RBV/average_value'].value[0])
+        title = decode(f['/entry/title'].value[0])
+        mon = decode(f['/entry/monitor1/total_counts'].value[0])
+        duration = decode(f['/entry/duration'].value[0])
+        run_number = decode(f['/entry/run_number'].value[0])
         bc = np.zeros((512*480*8))
         for b in range(8):
             bc += np.bincount(f['/entry/bank'+str(b+1)+'_events/event_id'].value,
