@@ -48,7 +48,7 @@ MaxOrder = 1
 CrossTerms = False
 
 # ellipsoidal peak integration envelope semi-axes ------------------------------
-PeakRadius = [0.1,0.1,0.1]
+PeakRadius = [0.05,0.05,0.1]
 
 # ellipsoidal peak integration background envelope semi-axes -------------------
 BackgroundInnerRadius = [0.1,0.1,0.1]
@@ -154,9 +154,12 @@ for p in range(peaks.getNumberPeaks()):
 
 
 ## now with the new stuff
+ModVector1 = [0.05,0.05,0]
+ModVector2 = [-0.1,0.05,0]
+ModVector3 = [-0.05,0.1,0]
+PeakRadius = [0.05,0.05,0.1]
 
-
-peaks = PredictPeaks(InputWorkspace=data_norm,
+peaks2 = PredictPeaks(InputWorkspace=data_norm,
                      ReflectionCondition=ReflectionCondition,
                      CalculateGoniometerForCW=True,
                      Wavelength=wavelength,
@@ -166,11 +169,11 @@ peaks = PredictPeaks(InputWorkspace=data_norm,
                      MaxAngle=90,
                      OutputType='LeanElasticPeak')
 
-peaks = CentroidPeaksMD(InputWorkspace=data_norm,
+peaks2 = CentroidPeaksMD(InputWorkspace=data_norm,
                         PeakRadius=PeakRadiuscen,
-                        PeaksWorkspace=peaks)
+                        PeaksWorkspace=peaks2)
 
-IndexPeaks(PeaksWorkspace=peaks,
+IndexPeaks(PeaksWorkspace=peaks2,
            Tolerance=Tolerance,
            RoundHKLs=False,
            ModVector1=ModVector1,
@@ -179,29 +182,26 @@ IndexPeaks(PeaksWorkspace=peaks,
            MaxOrder=MaxOrder,
            SaveModulationInfo=True)
 
-peaks = PredictSatellitePeaks(Peaks=peaks,
+sate_peaks2 = PredictSatellitePeaks(Peaks=peaks2,
                               ModVector1=ModVector1,
                               ModVector2=ModVector2,
                               ModVector3=ModVector3,
                               IncludeIntegerHKL=False,
                               MaxOrder=MaxOrder)
-
-peaks = IntegratePeaksMD(InputWorkspace=data_norm,
+HFIRCalculateGoniometer(sate_peaks2,wavelength)
+sate_peaks2 = IntegratePeaksMD(InputWorkspace=data_norm,
                          PeakRadius=PeakRadius,
-                         BackgroundInnerRadius=BackgroundInnerRadius,
-                         BackgroundOuterRadius=BackgroundOuterRadius,
-                         PeaksWorkspace=peaks,
-                         Ellipsoid=True,
-                         IntegrateIfOnEdge=False)
+                         #BackgroundInnerRadius=BackgroundInnerRadius,
+                         #BackgroundOuterRadius=BackgroundOuterRadius,
+                         PeaksWorkspace=sate_peaks2,
+                         Ellipsoid=True)
 
-peaks = FilterPeaks(InputWorkspace=peaks,
-                    FilterVariable='Intensity',
-                    FilterValue=FilterValue,
-                    Operator='>')
-                    
-                    
-
-for p in range(peaks.getNumberPeaks()):
-    peak = peaks.getPeak(p)
+for p in range(peaks2.getNumberPeaks()):
+    peak2 = peaks2.getPeak(p)
     lorentz = np.abs(np.sin(peak.getScattering()*np.cos(peak.getAzimuthal())))
-    peak.setIntensity(peak.getIntensity()*lorentz)
+    peak2.setIntensity(peak.getIntensity()*lorentz)
+
+clone=CloneMDWorkspace(data_norm)
+#HHL = ConvertQtoHKLMDHisto(clone,Uproj='1,1,0',Vproj='1,-1,0',Extents='-5.01,5.01,-3.51,3.51,-0.21,0.81',Bins='501,501,51')
+HKL = ConvertQtoHKLMDHisto(clone,Extents='-5.01,5.01,-5.01,5.01,-0.21,0.81',Bins='501,501,51')
+clone.delete()
