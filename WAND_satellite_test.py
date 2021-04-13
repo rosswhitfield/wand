@@ -207,3 +207,57 @@ HHL = ConvertQtoHKLMDHisto(clone,Uproj='1,1,0',Vproj='1,-1,0',Extents='-5.01,5.0
 HHL.getExperimentInfo(0).run().addProperty('W_MATRIX',[1,1,0,1,-1,0,0,0,1], True)
 HKL = ConvertQtoHKLMDHisto(clone,Extents='-5.01,5.01,-5.01,5.01,-0.21,0.81',Bins='501,501,51')
 clone.delete()
+
+
+# slightly different approach
+ModVector1 = [0.05,0.05,0]
+ModVector2 = [-0.1,0.05,0]
+ModVector3 = [-0.05,0.1,0]
+PeakRadius = [0.05,0.05,0.1]
+
+peaks3 = PredictPeaks(InputWorkspace=data_norm,
+                     ReflectionCondition=ReflectionCondition,
+                     Wavelength=wavelength,
+                     OutputType='LeanElasticPeak',
+                     CalculateWavelength=False,
+                     MinDSpacing=0.8)
+
+peaks3 = CentroidPeaksMD(InputWorkspace=data_norm,
+                        PeakRadius=PeakRadiuscen,
+                        PeaksWorkspace=peaks3)
+
+IndexPeaks(PeaksWorkspace=peaks3,
+           Tolerance=Tolerance,
+           RoundHKLs=False,
+           ModVector1=ModVector1,
+           ModVector2=ModVector2,
+           ModVector3=ModVector3,
+           MaxOrder=MaxOrder,
+           SaveModulationInfo=True)
+
+sate_peaks3 = PredictSatellitePeaks(Peaks=peaks3,
+                              ModVector1=ModVector1,
+                              ModVector2=ModVector2,
+                              ModVector3=ModVector3,
+                              IncludeIntegerHKL=False,
+                              MaxOrder=MaxOrder)
+HFIRCalculateGoniometer(sate_peaks3,wavelength)
+sate_peaks3 = IntegratePeaksMD(InputWorkspace=data_norm,
+                         PeakRadius=PeakRadius,
+                         PeaksWorkspace=sate_peaks3,
+                         Ellipsoid=True)
+sate_peaks3 = FilterPeaks(InputWorkspace=sate_peaks3,
+                    FilterVariable='Intensity',
+                    FilterValue=FilterValue,
+                    Operator='>')
+for p in range(peaks3.getNumberPeaks()):
+    peak3 = peaks3.getPeak(p)
+    lorentz = np.abs(np.sin(peak3.getScattering()*np.cos(peak3.getAzimuthal())))
+    peak3.setIntensity(peak3.getIntensity()*lorentz)
+
+# doing this to avoid bug in sliceviewer
+clone=CloneMDWorkspace(data_norm)
+#HHL = ConvertQtoHKLMDHisto(clone,Uproj='1,1,0',Vproj='1,-1,0',Extents='-5.01,5.01,-3.51,3.51,-0.21,0.81',Bins='501,501,51')
+#HHL.getExperimentInfo(0).run().addProperty('W_MATRIX',[1,1,0,1,-1,0,0,0,1], True)
+HKL = ConvertQtoHKLMDHisto(clone,Extents='-5.01,5.01,-5.01,5.01,-0.21,0.81',Bins='501,501,51')
+clone.delete()
