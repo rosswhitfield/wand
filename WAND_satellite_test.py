@@ -102,7 +102,7 @@ data_norm = ConvertHFIRSCDtoMDE(data_temp,
                                 wavelength=wavelength,
                                 MinValues=str(min_values[0])+','+str(min_values[1])+','+str(min_values[2]),
                                 MaxValues=str(max_values[0])+','+str(max_values[1])+','+str(max_values[2]))
-                                
+
 SaveMD(data_norm,Filename='/SNS/users/rwp/WAND_satellite_test.nxs')
 """
 data_norm = LoadMD('/home/rwp/WAND_satellite_test.nxs')
@@ -216,15 +216,15 @@ ModVector3 = [-0.05,0.1,0]
 PeakRadius = [0.05,0.05,0.1]
 
 peaks3 = PredictPeaks(InputWorkspace=data_norm,
-                     ReflectionCondition=ReflectionCondition,
-                     Wavelength=wavelength,
-                     OutputType='LeanElasticPeak',
-                     CalculateWavelength=False,
-                     MinDSpacing=0.8)
+                      ReflectionCondition=ReflectionCondition,
+                      Wavelength=wavelength,
+                      OutputType='LeanElasticPeak',
+                      CalculateWavelength=False,
+                      MinDSpacing=0.8)
 
 peaks3 = CentroidPeaksMD(InputWorkspace=data_norm,
-                        PeakRadius=PeakRadiuscen,
-                        PeaksWorkspace=peaks3)
+                         PeakRadius=PeakRadiuscen,
+                         PeaksWorkspace=peaks3)
 
 IndexPeaks(PeaksWorkspace=peaks3,
            Tolerance=Tolerance,
@@ -236,20 +236,24 @@ IndexPeaks(PeaksWorkspace=peaks3,
            SaveModulationInfo=True)
 
 sate_peaks3 = PredictSatellitePeaks(Peaks=peaks3,
-                              ModVector1=ModVector1,
-                              ModVector2=ModVector2,
-                              ModVector3=ModVector3,
-                              IncludeIntegerHKL=False,
-                              MaxOrder=MaxOrder)
-HFIRCalculateGoniometer(sate_peaks3,wavelength)
+                                    ModVector1=ModVector1,
+                                    ModVector2=ModVector2,
+                                    ModVector3=ModVector3,
+                                    IncludeIntegerHKL=False,
+                                    MaxOrder=MaxOrder)
+
+HFIRCalculateGoniometer(sate_peaks3, wavelength)
+
 sate_peaks3 = IntegratePeaksMD(InputWorkspace=data_norm,
-                         PeakRadius=PeakRadius,
-                         PeaksWorkspace=sate_peaks3,
-                         Ellipsoid=True)
+                               PeakRadius=PeakRadius,
+                               PeaksWorkspace=sate_peaks3,
+                               Ellipsoid=True)
+
 sate_peaks3 = FilterPeaks(InputWorkspace=sate_peaks3,
-                    FilterVariable='Intensity',
-                    FilterValue=FilterValue,
-                    Operator='>')
+                          FilterVariable='Intensity',
+                          FilterValue=FilterValue,
+                          Operator='>')
+
 for p in range(peaks3.getNumberPeaks()):
     peak3 = peaks3.getPeak(p)
     lorentz = np.abs(np.sin(peak3.getScattering()*np.cos(peak3.getAzimuthal())))
