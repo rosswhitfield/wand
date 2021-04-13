@@ -64,7 +64,7 @@ Tolerance = 0.05
 FilterValue = 0
 
 # ---
-
+"""
 norm = LoadWANDSCD(IPTS=van_ipts,
                    RunNumbers=van_run,
                    Grouping=grouping)
@@ -102,6 +102,10 @@ data_norm = ConvertHFIRSCDtoMDE(data_temp,
                                 wavelength=wavelength,
                                 MinValues=str(min_values[0])+','+str(min_values[1])+','+str(min_values[2]),
                                 MaxValues=str(max_values[0])+','+str(max_values[1])+','+str(max_values[2]))
+                                
+SaveMD(data_norm,Filename='/SNS/users/rwp/WAND_satellite_test.nxs')
+"""
+data_norm = LoadMD('/home/rwp/WAND_satellite_test.nxs')
 
 peaks = PredictPeaks(InputWorkspace=data_norm,
                      ReflectionCondition=ReflectionCondition,
@@ -133,11 +137,10 @@ peaks = PredictSatellitePeaks(Peaks=peaks,
                               WavelengthMax=wavelength+0.02,
                               IncludeIntegerHKL=False,
                               MaxOrder=MaxOrder)
-
 peaks = IntegratePeaksMD(InputWorkspace=data_norm,
                          PeakRadius=PeakRadius,
-                         BackgroundInnerRadius=BackgroundInnerRadius,
-                         BackgroundOuterRadius=BackgroundOuterRadius,
+                         #BackgroundInnerRadius=BackgroundInnerRadius,
+                         #BackgroundOuterRadius=BackgroundOuterRadius,
                          PeaksWorkspace=peaks,
                          Ellipsoid=True,
                          IntegrateIfOnEdge=False)
@@ -191,17 +194,16 @@ sate_peaks2 = PredictSatellitePeaks(Peaks=peaks2,
 HFIRCalculateGoniometer(sate_peaks2,wavelength)
 sate_peaks2 = IntegratePeaksMD(InputWorkspace=data_norm,
                          PeakRadius=PeakRadius,
-                         #BackgroundInnerRadius=BackgroundInnerRadius,
-                         #BackgroundOuterRadius=BackgroundOuterRadius,
                          PeaksWorkspace=sate_peaks2,
                          Ellipsoid=True)
 
 for p in range(peaks2.getNumberPeaks()):
     peak2 = peaks2.getPeak(p)
-    lorentz = np.abs(np.sin(peak.getScattering()*np.cos(peak.getAzimuthal())))
-    peak2.setIntensity(peak.getIntensity()*lorentz)
+    lorentz = np.abs(np.sin(peak2.getScattering()*np.cos(peak2.getAzimuthal())))
+    peak2.setIntensity(peak2.getIntensity()*lorentz)
 
 clone=CloneMDWorkspace(data_norm)
-#HHL = ConvertQtoHKLMDHisto(clone,Uproj='1,1,0',Vproj='1,-1,0',Extents='-5.01,5.01,-3.51,3.51,-0.21,0.81',Bins='501,501,51')
+HHL = ConvertQtoHKLMDHisto(clone,Uproj='1,1,0',Vproj='1,-1,0',Extents='-5.01,5.01,-3.51,3.51,-0.21,0.81',Bins='501,501,51')
+HHL.getExperimentInfo(0).run().addProperty('W_MATRIX',[1,1,0,1,-1,0,0,0,1], True)
 HKL = ConvertQtoHKLMDHisto(clone,Extents='-5.01,5.01,-5.01,5.01,-0.21,0.81',Bins='501,501,51')
 clone.delete()
